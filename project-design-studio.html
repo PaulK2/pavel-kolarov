@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Design &amp; Branding Studio — Pavel Kolarov</title>
+  <meta name="description" content="Custom Design & Branding Studio — a custom sticker, branding, and design studio website. Live at stickers.studio." />
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <meta name="theme-color" content="#070a12" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=2026" />
+  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+</head>
+
+<body>
+  <header>
+    <nav aria-label="Main navigation">
+      <a class="logo-img" href="index.html" aria-label="Home">
+        <img src="assets/logo-img.png" alt="Pavel Kolarov logo" />
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="cv.html">CV</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="projects.html">← Back to Projects</a>
+
+    <section class="project-hero">
+      <span class="section-label">Project</span>
+      <h1 class="page-title">Custom Design &amp; Branding Studio</h1>
+      <p class="page-intro">
+        A custom sticker, branding, and design studio website. Visitors can design their own
+        stickers with a live preview, browse ready-made options, and send production requests —
+        covering vinyl cutting, custom prints, and brand visuals from concept to finished product.
+      </p>
+      <div class="project-links">
+        <a class="btn btn-primary" href="https://stickers.studio" target="_blank" rel="noopener noreferrer">Visit Live Site ↗</a>
+        <a class="btn btn-ghost" href="https://github.com/d466studio/stickersbg" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      </div>
+    </section>
+
+    <div class="meta-grid reveal">
+      <div class="meta-card">
+        <div class="meta-label">Tech Stack</div>
+        <div class="badge-row">
+          <span class="badge">HTML</span>
+          <span class="badge">CSS</span>
+          <span class="badge">JavaScript</span>
+          <span class="badge">Design</span>
+        </div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Repository</div>
+        <a href="https://github.com/d466studio/stickersbg" target="_blank" rel="noopener noreferrer">github.com/d466studio/stickersbg</a>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Live Website</div>
+        <a href="https://stickers.studio" target="_blank" rel="noopener noreferrer">stickers.studio</a>
+      </div>
+    </div>
+
+    <section class="reveal" aria-label="Live preview">
+      <span class="section-label">Live Preview</span>
+      <div class="preview-frame">
+        <div class="preview-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <a class="preview-url" href="https://stickers.studio" target="_blank" rel="noopener noreferrer">stickers.studio</a>
+        </div>
+        <div class="preview-viewport" id="preview-viewport" data-live-url="https://stickers.studio">
+          <img class="preview-shot" src="assets/projects/stickers-preview.png" alt="Screenshot of the stickers.studio landing page" />
+          <div class="preview-overlay">
+            <button class="btn btn-primary" type="button" id="load-preview">▶ Load Interactive Preview</button>
+          </div>
+        </div>
+      </div>
+      <p class="preview-note">
+        The interactive preview embeds the real site. If it doesn’t load in your browser,
+        use the “Visit Live Site” button above.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© <span class="year"></span> Pavel Kolarov</span>
+      <div class="footer-links">
+        <a href="projects.html">Projects</a>
+        <a href="cv.html">CV</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    // Swap the screenshot for a live iframe on demand
+    document.getElementById("load-preview").addEventListener("click", () => {
+      const viewport = document.getElementById("preview-viewport");
+      const iframe = document.createElement("iframe");
+      iframe.src = viewport.dataset.liveUrl;
+      iframe.title = "Live preview of stickers.studio";
+      iframe.loading = "lazy";
+      viewport.appendChild(iframe);
+      viewport.querySelector(".preview-overlay").remove();
+    });
+  </script>
+</body>
+</html>

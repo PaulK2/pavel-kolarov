@@ -3,216 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pavel Kolarov — IT Delivery &amp; Systems Specialist</title>
 
-  <title>Pavel Kolarov</title>
+  <meta name="description" content="Pavel Kolarov — globally-minded IT delivery and systems specialist with hands-on experience across Europe: enterprise IT, systems engineering, and creative design work." />
 
-  <!-- SEO -->
-  <meta
-    name="description"
-    content="Pavel Kolarov – I’m a globally-minded Specialist with hands-on experience across Europe. I speak multiple languages, thrive in multicultural teams, and love solving both human and technical challenges."
-  />
-
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
-  <!-- Open Graph / Social -->
   <meta property="og:title" content="Pavel Kolarov" />
-  <meta property="og:description" content="I’m a globally-minded Specialist with hands-on experience across Europe. I speak multiple languages, thrive in multicultural teams, and love solving both human and technical challenges." />
+  <meta property="og:description" content="IT delivery and systems specialist with hands-on experience across Europe — enterprise IT, systems engineering, and creative design work." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://pavelkolarov.net/" />
-  <!-- Optional: if you have a preview image -->
-  <!-- <meta property="og:image" content="https://YOUR_GITHUB_USERNAME.github.io/assets/preview.png" /> -->
 
-  <!-- Browser theme color -->
-  <meta name="theme-color" content="#0d1117" />
+  <meta name="theme-color" content="#070a12" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css?v=2026" />
+  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 
 <body>
   <header>
     <nav aria-label="Main navigation">
-      <a class="logo-img" href="index.html">
-        <img src="assets/logo-img.png" alt="Pavel Kolarov Logo">
+      <a class="logo-img" href="index.html" aria-label="Home">
+        <img src="assets/logo-img.png" alt="Pavel Kolarov logo" />
       </a>
-     <div class="nav-links">
-      <a class="nav-btn" href="experience.html">Experience</a>
-      <a class="nav-btn" href="projects.html">Projects</a>
-      <a class="nav-btn" href="about.html">About</a>
-      <a class="nav-btn" href="contact.html">Contact</a>
-    </div>
-
+      <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="cv.html">CV</a>
+        <a href="contact.html">Contact</a>
+      </div>
     </nav>
   </header>
 
   <main class="container">
-    <section aria-label="Introduction">
-      <h1 class="hero-title">Hello, I’m Pavel 👋</h1>
-      <p>
-        I’m a globally-minded Specialist with hands-on experience across Europe. I speak multiple languages, thrive in multicultural teams, and love solving both human and technical challenges.<br>
-        I’ve worked on enterprise IT systems, design projects, and creative business ideas — combining structured technical delivery with visual and interpersonal strengths.<br><br>
-
-        My approach to work is simple: <strong> understand the goal, respect the people, and deliver with precision.</strong>
-     <div class="btn-row">
-  <div class="btn-dropdown">
-    <button class="btn" type="button" id="cv-toggle">
-      Download CV ▾
-    </button>
-    <div class="btn-menu" id="cv-menu">
-      <a href="assets/PavelKolarov_Nov2025.pdf" download data-no-transition>
-        Download as PDF
-      </a>
-      <a href="assets/PavelKolarov_Nov2025.docx" download data-no-transition>
-        Download as DOCX
-      </a>
-    </div>
-  </div>
-
-  <a class="btn" href="contact.html">Get in Touch</a>
-</div>
-      
- <div class="scroll-hint" aria-hidden="true"> 
- <!-- <span>Scroll</span> -->
-  <span class="scroll-arrow">↓</span>
-</div>
-
-
-      
+    <section class="hero" aria-label="Introduction">
+      <span class="hero-eyebrow"><span class="dot"></span> Open to new opportunities</span>
+      <h1>Hi, I’m <span class="gradient-text">Pavel Kolarov</span></h1>
+      <p class="hero-tagline">
+        A globally-minded IT delivery and systems specialist with hands-on experience across Europe.
+        I speak multiple languages, thrive in multicultural teams, and enjoy solving both human and
+        technical challenges — from enterprise IT systems to creative design work.
       </p>
+      <p class="hero-motto">Understand the goal, respect the people, and deliver with precision.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="projects.html">View Projects →</a>
+        <a class="btn btn-ghost" href="cv.html">See My CV</a>
+      </div>
+      <div class="chip-row" aria-label="Focus areas">
+        <span class="chip">IT Service Delivery</span>
+        <span class="chip">Systems Engineering</span>
+        <span class="chip">Hardware Architecture</span>
+        <span class="chip">Enterprise Business</span>
+        <span class="chip">Custom Design</span>
+      </div>
     </section>
 
-  <div class="bottom-highlights">
-  <span>Hardware Architecture</span>
-  <span>System Engineering</span>
-  <span>Service Delivery</span>
-  <span>Enterprise Business</span>
-  <span>Custom Design</span>
-</div>
+    <section class="home-section reveal" aria-label="What I do">
+      <span class="section-label">What I Do</span>
+      <h2 class="section-title">Technical delivery meets creative execution</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">🛰️</div>
+          <h3>IT Service Delivery</h3>
+          <p>Coordinating enterprise-grade IT services, post-sales business orders, and cross-team delivery for corporate clients.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⚙️</div>
+          <h3>Systems &amp; Hardware</h3>
+          <p>Systems engineering, requirements management, and multi-language hardware support across EMEA enterprise environments.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎨</div>
+          <h3>Design &amp; Branding</h3>
+          <p>Running an independent design studio — custom stickers, vehicle graphics, and brand visuals from concept to finished product.</p>
+        </div>
+      </div>
+    </section>
 
+    <section class="home-section reveal" aria-label="Professional experience">
+      <span class="section-label">Experience</span>
+      <h2 class="section-title">Where I’ve worked</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-logo"><img src="assets/logos/a1.png" alt="A1 / Telekom Austria Group logo" /></div>
+          <div class="timeline-body">
+            <h3>Telekom Austria Group</h3>
+            <p class="role"><strong>ITS Delivery Specialist</strong> — enterprise order &amp; service delivery for corporate clients</p>
+          </div>
+          <span class="timeline-period">2025 – Present</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-logo"><img src="assets/logos/hpe.png" alt="Hewlett Packard Enterprise logo" /></div>
+          <div class="timeline-body">
+            <h3>Hewlett Packard Enterprise</h3>
+            <p class="role"><strong>Compute Hardware Support Engineer</strong> — multi-language server support across EMEA</p>
+          </div>
+          <span class="timeline-period">2024 – 2025</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-logo"><img src="assets/logos/bosch.png" alt="Robert Bosch logo" /></div>
+          <div class="timeline-body">
+            <h3>Robert Bosch</h3>
+            <p class="role"><strong>System Engineer</strong> — system requirements and documentation in automotive</p>
+          </div>
+          <span class="timeline-period">2022 – 2024</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-logo"><img src="assets/logos/hcl.png" alt="HCL Technologies logo" /></div>
+          <div class="timeline-body">
+            <h3>C3i Solutions (HCL Technologies)</h3>
+            <p class="role"><strong>IT Helpdesk Analyst</strong> — Active Directory and enterprise workplace support</p>
+          </div>
+          <span class="timeline-period">2021 – 2022</span>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-logo"><img src="assets/logos/amazon-blink.png" alt="Amazon Blink logo" /></div>
+          <div class="timeline-body">
+            <h3>Amazon “Blink for Home”</h3>
+            <p class="role"><strong>Technical Support Agent</strong> — networking and IT support for UK, US &amp; DE customers</p>
+          </div>
+          <span class="timeline-period">2021</span>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top: 1.6rem;">
+        <a class="btn btn-ghost" href="cv.html">Full career history in my CV →</a>
+      </div>
+    </section>
   </main>
 
   <footer>
-    © <span id="year"></span> Pavel Kolarov
+    <div class="footer-inner">
+      <span>© <span class="year"></span> Pavel Kolarov</span>
+      <div class="footer-links">
+        <a href="projects.html">Projects</a>
+        <a href="cv.html">CV</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
   </footer>
 
-  <!-- Clock + Progress bar + Fish -->
-  <div
-    id="clock"
-    class="clock"
-    aria-label="Current time"
-    aria-live="off"
-  ></div>
-
-  <div class="progress-container" aria-hidden="true">
-    <div class="progress-bar" id="progress-bar"></div>
-  </div>
-
-  <div class="fish" id="fish" aria-hidden="true">🐟</div>
-
-  <script>
-    // Fade transitions + fade-in elements
-    document.addEventListener("DOMContentLoaded", () => {
-      document.body.classList.add("page-ready");
-
-      document
-        .querySelectorAll("main, .card, h1, h2, p, ul")
-        .forEach((el) => el.classList.add("fade-in"));
-
-// --- CV dropdown ---
-const cvToggle = document.getElementById("cv-toggle");
-const cvMenu = document.getElementById("cv-menu");
-
-if (cvToggle && cvMenu) {
-  // Toggle on button click
-  cvToggle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    cvMenu.classList.toggle("open");
-  });
-
-  // Close when clicking outside
-  document.addEventListener("click", () => {
-    cvMenu.classList.remove("open");
-  });
-
-  // Close on Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      cvMenu.classList.remove("open");
-    }
-  });
-}
-
-      
-      // Fade-out between internal pages
-      document.querySelectorAll('a[href]').forEach((a) => {
-        const url = new URL(a.getAttribute('href'), window.location.href);
-        const isInternal = url.origin === window.location.origin;
-        const isFile =
-          url.pathname.endsWith(".html") ||
-          url.pathname === "/" ||
-          url.pathname === window.location.pathname;
-
-        if (isInternal && isFile && !a.hasAttribute("data-no-transition")) {
-          a.addEventListener("click", (e) => {
-            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-            e.preventDefault();
-            document.body.classList.remove("page-ready");
-            setTimeout(() => {
-              window.location.href = url.href;
-            }, 220);
-          });
-        }
-      });
-    });
-
-    // Footer year
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
-
-    // --- Clock + Progress + Fish synchronized ---
-    const bar = document.getElementById("progress-bar");
-    const fish = document.getElementById("fish");
-    const clock = document.getElementById("clock");
-    let lastMinute = -1;
-    let jumpTimeout;
-
-    (function animateEverything() {
-      function frame() {
-        const now = new Date();
-        const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
-
-        const hh = now.getHours().toString().padStart(2, "0");
-        const mm = now.getMinutes().toString().padStart(2, "0");
-        const ss = now.getSeconds().toString().padStart(2, "0");
-        clock.textContent = `${hh}:${mm}:${ss}`;
-
-        // Progress and direction
-        const p = seconds / 60;
-        const goingRight = now.getMinutes() % 2 === 0; // alternate each minute
-        const progressPercent = goingRight ? p * 100 : (1 - p) * 100;
-        bar.style.width = progressPercent + "%";
-
-        // Fish movement
-        const W = window.innerWidth;
-        const x = (progressPercent / 100) * (W - 60);
-        const tilt = goingRight ? -5 : 5;
-        const flip = goingRight ? -1 : 1;
-        fish.style.left = x + "px";
-        fish.style.transform = `scaleX(${flip}) rotate(${tilt}deg)`;
-
-        // Fish jump at minute change
-        if (now.getMinutes() !== lastMinute) {
-          lastMinute = now.getMinutes();
-          fish.style.transform += " translateY(-30px)";
-          clearTimeout(jumpTimeout);
-          jumpTimeout = setTimeout(() => {
-            fish.style.transform = `scaleX(${flip}) rotate(${tilt}deg)`;
-          }, 500);
-        }
-
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    })();
-  </script>
+  <script src="main.js"></script>
 </body>
+</html>

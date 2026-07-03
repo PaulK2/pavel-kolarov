@@ -3,135 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects – Pavel Kolarov</title>
-  <link rel="icon" href="assets/favicon.ico" />
-  <link rel="stylesheet" href="styles.css" />
+  <title>Projects — Pavel Kolarov</title>
+  <meta name="description" content="Selected projects by Pavel Kolarov: Web Order Tracker and Custom Design & Branding Studio." />
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <meta name="theme-color" content="#070a12" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=2026" />
+  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 
 <body>
   <header>
-    <nav>
-       <a class="logo-img" href="index.html">
-        <img src="assets/logo-img.png" alt="Pavel Kolarov Logo">
+    <nav aria-label="Main navigation">
+      <a class="logo-img" href="index.html" aria-label="Home">
+        <img src="assets/logo-img.png" alt="Pavel Kolarov logo" />
       </a>
+      <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
       <div class="nav-links">
-        <a href="experience.html">Experience</a>
-        <a href="projects.html" class = "active">Projects</a>
-        <a href="about.html">About</a>
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="cv.html">CV</a>
         <a href="contact.html">Contact</a>
       </div>
     </nav>
   </header>
 
   <main class="container">
-    <h1>Highlighted Projects</h1>
-
-    <div class="card fade-in project-item">
-  <div class="project-icon">
-    <img src="assets/projects/python-tool.png" alt="Python Tool Icon">
-  </div>
-
-  <div class="project-details">
-    <h2>Python Order Tracker Tool (Internal Workflow Optimization)</h2>
-    <p>
-      Developed a custom Python tool to optimize order tracking within daily operations.<br>
-      The tool collects status, organizes workflow steps, and reduces repetitive manual tasks, resulting in faster processing and fewer errors.<br>
-      It supports real-time oversight of order progress and has improved team communication and efficiency.<br>
-      It generates a unique user code, which can be used by other team members, if needed, so they can check your progress.
+    <span class="section-label">Portfolio</span>
+    <h1 class="page-title">Projects</h1>
+    <p class="page-intro">
+      Selected work I’ve built and run — click a project to see its dedicated preview page
+      with a live demo, tech stack, and source code.
     </p>
-  </div>
-</div>
 
-      <a href="project-quick-clipboard.html" class="card-link"></a>
-     <div class="card fade-in project-item">
-  <div class="project-icon">
-    <img src="assets/projects/quick_clipboard.png" alt="Quick Clipboard Icon">
-  </div>
+    <div class="project-grid">
+      <a class="project-card reveal" href="project-web-order-tracker.html" aria-label="Web Order Tracker — view project details">
+        <div class="project-thumb">
+          <img src="assets/projects/wotracker-preview.png" alt="Screenshot of the Web Order Tracker application" />
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="project-body">
+          <h2>Web Order Tracker <span class="arrow">→</span></h2>
+          <p>A functional internal order-tracking platform built with HTML, CSS, and JavaScript — live at wotracker.net.</p>
+          <div class="badge-row">
+            <span class="badge">HTML</span>
+            <span class="badge">CSS</span>
+            <span class="badge">JavaScript</span>
+            <span class="badge">Live App</span>
+          </div>
+        </div>
+      </a>
 
-  <div class="project-details">
-    <h2>Quick Clipboard Windows Add-On</h2>
-    <p>
-      A lightweight clipboard companion that lives quietly in the Windows system tray.<br>
-      It lets you save your most frequently used snippets and paste them with a click.<br>
-      The app shows your current clipboard contents, keeps your go-to items organized, and wraps everything in a modern, minimal UI that stays out of the way until you need it.
-    </p>
-  </div>
-</div>
-
-<div class="card fade-in project-item">
-  <div class="project-icon">
-    <img src="assets/projects/idle-rpg.png" alt="Idle RPG Icon">
-  </div>
-
-  <div class="project-details">
-    <h2>Game Development Project – Idle RPG Dungeon Fighter</h2>
-    <p>
-      Created an idle RPG dungeon-fighting game using progress bars and an upgrade-driven progression system.<br>
-      The game includes adaptive combat, randomized dungeon encounters, player leveling, item upgrades, and a unique visual design.<br>
-      Currently working on a web-based version to improve accessibility and showcase full-stack capabilities.
-    </p>
-  </div>
-</div>
-
-<div class="card fade-in project-item">
-  <div class="project-icon">
-    <img src="assets/projects/design-studio.png" alt="Design Studio Icon">
-  </div>
-
-  <div class="project-details">
-    <h2>Custom Design & Branding Studio (Creative Labeling Business)</h2>
-    <p>
-      Operating a small independent branding and design studio.<br>
-      Delivering customized solutions, including business labels, storefront mirror graphics, racing car designs, promotional visuals, and various vinyl installations.<br>
-      Developed concepts from idea to finished product, combining creativity with precise technical execution.
-    </p>
-  </div>
-</div>
-
+      <a class="project-card reveal" href="project-design-studio.html" aria-label="Custom Design and Branding Studio — view project details">
+        <div class="project-thumb">
+          <img src="assets/projects/stickers-preview.png" alt="Screenshot of the stickers.studio website" />
+          <div class="thumb-overlay"></div>
+        </div>
+        <div class="project-body">
+          <h2>Custom Design &amp; Branding Studio <span class="arrow">→</span></h2>
+          <p>A custom sticker, branding, and design studio website — live at stickers.studio.</p>
+          <div class="badge-row">
+            <span class="badge">Branding</span>
+            <span class="badge">Web Design</span>
+            <span class="badge">Vinyl &amp; Print</span>
+            <span class="badge">Live Site</span>
+          </div>
+        </div>
+      </a>
+    </div>
   </main>
 
-  <footer>© <span id="year"></span> Pavel Kolarov</footer>
+  <footer>
+    <div class="footer-inner">
+      <span>© <span class="year"></span> Pavel Kolarov</span>
+      <div class="footer-links">
+        <a href="projects.html">Projects</a>
+        <a href="cv.html">CV</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
 
-  <div class="fish" id="fish" style="z-index: 9999;">🐟</div>
-
- <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.add("page-ready");
-
-    const yearEl = document.getElementById("year");
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-    const fish = document.getElementById("fish");
-    if (!fish) return;
-
-    let targetX = 0;
-    let currentX = 0;
-    const followStrength = 0.08; // smaller = smoother / slower follow
-
-    document.addEventListener("mousemove", e => {
-      const centerX = window.innerWidth / 2;
-      const flip = e.clientX > centerX ? -1 : 1;
-      const tilt = e.clientX > centerX ? 10 : 10;
-      targetX = ((e.clientX - centerX) / centerX) * 15; // move up to ±15px
-      fish.dataset.flip = flip;
-      fish.dataset.tilt = tilt;
-    });
-
-    function animateFish() {
-      // Smooth interpolation for horizontal offset
-      currentX += (targetX - currentX) * followStrength;
-
-      // Use saved flip/tilt values (default face right)
-      const flip = fish.dataset.flip || -1;
-      const tilt = fish.dataset.tilt || 10;
-
-      fish.style.transform = `translateX(${currentX}px) scaleX(${flip}) rotate(${tilt}deg)`;
-      requestAnimationFrame(animateFish);
-    }
-
-    animateFish();
-  });
-</script>
-
+  <script src="main.js"></script>
 </body>
 </html>
