@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <title>Settings • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Small additions for checklist editor */
+    .task-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .task-item{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      padding:10px 12px;border-radius:12px;border:1px solid var(--border);
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+    }
+    .task-item[draggable="true"]{cursor:grab}
+    .task-item.dragging{opacity:.55}
+    .task-name{flex:1;min-width:220px}
+    .task-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .task-handle{
+      user-select:none;
+      font-size:12px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+    }
+    .mini{padding:8px 10px;border-radius:12px}
+    .expand{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+    }
+    .expand-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  </style>
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">Open Orders</a>
+        <a href="finished.html">Finished</a>
+        <a href="notes.html">Notes</a>
+        <a href="links.html">Links</a>
+        <a href="kb.html">Knowledge Base</a>
+        <a href="settings.html" class="active">Settings</a>
+        <a href="info.html">Info</a>
+      </nav>
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    <section class="card">
+      <div class="card-h">
+        <h1 class="h2">Settings</h1>
+        <p class="muted">Theme, categories & checklist templates, data sharing.</p>
+      </div>
+
+      <div class="card-b stack">
+
+        <!-- THEME -->
+        <div class="row between">
+          <div>
+            <b>Theme</b>
+            <div class="muted small">Applies instantly</div>
+          </div>
+          <div class="row end">
+            <button id="dark">Dark</button>
+            <button id="light">Light</button>
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <!-- CATEGORIES + CHECKLIST EDITOR -->
+        <div class="row between">
+          <div>
+            <b>Order categories</b>
+            <div class="muted small">Each category defines the default checklist for new orders. You can edit tasks here.</div>
+          </div>
+          <button class="primary" id="addCat">Add category</button>
+        </div>
+
+        <div id="cats" class="stack"></div>
+
+        <div class="sep"></div>
+
+        <!-- DATA KEY -->
+        <div class="row between">
+          <div>
+            <b>Data key</b>
+            <div class="muted small">Share your data as a compact key (base64 JSON). Load it in preview mode.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="primary" id="showKey">Show my key</button>
+          <button class="ghost" id="loadKey">Load key (preview)</button>
+          <button class="ghost" id="restore" title="Back to my data">Back to my data</button>
+        </div>
+
+        <textarea id="keyBox" placeholder="Key will appear here (or paste a key here to load preview)"></textarea>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+
+    (function(){
+      const $ = OT.byId;
+      const catsRoot = $("cats");
+      const keyBox = $("keyBox");
+
+      OT.State.data.categories ||= [{name:"Default", color:"#3b82f6", tasks:[...OT.DEFAULT_TASKS]}];
+
+      function renderCats(){
+        OT.clear(catsRoot);
+
+        OT.State.data.categories.forEach((c, idx)=>{
+          c.tasks ||= [];
+          const taskCount = c.tasks.length;
+
+          const card = OT.el(`
+            <div class="card">
+              <div class="card-b stack">
+                <div class="row between">
+                  <div class="row">
+                    <div class="pill" style="border-color:${c.color||"#3b82f6"}">${escapeHtml(c.name||"Category")}</div>
+                    <div class="muted small">${taskCount} tasks</div>
+                  </div>
+                  <div class="row end">
+                    <button class="ghost" data-toggle>Checklist</button>
+                    <button class="ghost" data-edit>Edit</button>
+                    <button class="bad" data-rm>Remove</button>
+                  </div>
+                </div>
+
+                <div class="expand" data-panel style="display:none">
+                  <div class="expand-title">
+                    <div>
+                      <b>Checklist editor</b>
+                      <div class="muted small">Drag to reorder (or use Up/Down). Changes affect new orders; existing orders keep their own checklist unless you change category.</div>
+                    </div>
+                    <div class="muted small"><span class="task-handle">Drag</span></div>
+                  </div>
+
+                  <div class="row" style="margin-top:10px">
+                    <input data-newtask placeholder="New task (e.g., SAP EFLOW)" style="min-width:280px" />
+                    <button class="primary" data-addtask>Add</button>
+                    <button class="ghost" data-reset>Reset to default</button>
+                  </div>
+
+                  <div class="task-list" data-tasks></div>
+                </div>
+              </div>
+            </div>
+          `);
+
+          // Toggle checklist panel
+          const panel = card.querySelector("[data-panel]");
+          card.querySelector("[data-toggle]").onclick = ()=>{
+            panel.style.display = (panel.style.display === "none") ? "block" : "none";
+            if(panel.style.display === "block") renderTasks(card, c);
+          };
+
+          // Edit category name/color
+          card.querySelector("[data-edit]").onclick = ()=>{
+            const name = prompt("Category name:", c.name||"");
+            if(name===null) return;
+            const color = prompt("Color (hex):", c.color||"#3b82f6");
+            if(color===null) return;
+            c.name = name.trim() || c.name || "Category";
+            c.color = color.trim() || "#3b82f6";
+            OT.saveUser();
+            renderCats();
+            OT.toast("Category updated", "ok");
+          };
+
+          // Remove category
+          card.querySelector("[data-rm]").onclick = ()=>{
+            if(OT.State.data.categories.length<=1) return OT.toast("Need at least one category", "bad");
+            if(!confirm(`Remove category '${c.name}'?`)) return;
+            OT.State.data.categories.splice(idx, 1);
+            OT.saveUser();
+            renderCats();
+            OT.toast("Category removed", "ok");
+          };
+
+          // Add task
+          card.querySelector("[data-addtask]").onclick = ()=>{
+            const inp = card.querySelector("[data-newtask]");
+            const t = (inp.value||"").trim();
+            if(!t) return OT.toast("Task name required", "bad");
+            c.tasks.push(t);
+            inp.value = "";
+            OT.saveUser();
+            renderTasks(card, c);
+            OT.toast("Task added", "ok");
+          };
+
+          // Reset tasks to default
+          card.querySelector("[data-reset]").onclick = ()=>{
+            if(!confirm("Reset this checklist to the default tasks?")) return;
+            c.tasks = [...OT.DEFAULT_TASKS];
+            OT.saveUser();
+            renderTasks(card, c);
+            OT.toast("Checklist reset", "ok");
+          };
+
+          catsRoot.appendChild(card);
+        });
+      }
+
+      function renderTasks(catCard, catObj){
+        const root = catCard.querySelector("[data-tasks]");
+        OT.clear(root);
+
+        let dragFrom = null;
+
+        catObj.tasks.forEach((task, i)=>{
+          const row = OT.el(`
+            <div class="task-item" draggable="true">
+              <span class="task-handle">⋮⋮</span>
+              <div class="task-name"><b>${escapeHtml(task)}</b></div>
+              <div class="task-actions">
+                <button class="ghost mini" data-up>Up</button>
+                <button class="ghost mini" data-down>Down</button>
+                <button class="ghost mini" data-edit>Edit</button>
+                <button class="bad mini" data-rm>Remove</button>
+              </div>
+            </div>
+          `);
+
+          // Up/Down reorder
+          row.querySelector("[data-up]").onclick = ()=>{
+            if(i === 0) return;
+            [catObj.tasks[i-1], catObj.tasks[i]] = [catObj.tasks[i], catObj.tasks[i-1]];
+            OT.saveUser();
+            renderTasks(catCard, catObj);
+          };
+          row.querySelector("[data-down]").onclick = ()=>{
+            if(i >= catObj.tasks.length-1) return;
+            [catObj.tasks[i+1], catObj.tasks[i]] = [catObj.tasks[i], catObj.tasks[i+1]];
+            OT.saveUser();
+            renderTasks(catCard, catObj);
+          };
+
+          // Edit task text
+          row.querySelector("[data-edit]").onclick = ()=>{
+            const v = prompt("Task:", task);
+            if(v === null) return;
+            const nv = v.trim();
+            if(!nv) return OT.toast("Task cannot be empty", "bad");
+            catObj.tasks[i] = nv;
+            OT.saveUser();
+            renderTasks(catCard, catObj);
+            OT.toast("Task updated", "ok");
+          };
+
+          // Remove task
+          row.querySelector("[data-rm]").onclick = ()=>{
+            if(!confirm("Remove this task?")) return;
+            catObj.tasks.splice(i, 1);
+            OT.saveUser();
+            renderTasks(catCard, catObj);
+            OT.toast("Task removed", "ok");
+          };
+
+          // Drag & drop reorder
+          row.addEventListener("dragstart", (e)=>{
+            dragFrom = i;
+            row.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+          });
+          row.addEventListener("dragend", ()=>{
+            row.classList.remove("dragging");
+          });
+          row.addEventListener("dragover", (e)=>{
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+          });
+          row.addEventListener("drop", (e)=>{
+            e.preventDefault();
+            if(dragFrom === null || dragFrom === i) return;
+            const item = catObj.tasks.splice(dragFrom, 1)[0];
+            catObj.tasks.splice(i, 0, item);
+            dragFrom = null;
+            OT.saveUser();
+            renderTasks(catCard, catObj);
+            OT.toast("Reordered", "ok");
+          });
+
+          root.appendChild(row);
+        });
+
+        if(!catObj.tasks.length){
+          root.appendChild(OT.el(`<div class="muted small">No tasks. Add one above.</div>`));
+        }
+      }
+
+      function escapeHtml(s){
+        return String(s ?? "")
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      // Theme buttons
+      $("dark").onclick = ()=>{ OT.State.data.theme="dark"; OT.applyTheme("dark"); OT.saveUser(); OT.toast("Dark theme", "ok"); };
+      $("light").onclick = ()=>{ OT.State.data.theme="light"; OT.applyTheme("light"); OT.saveUser(); OT.toast("Light theme", "ok"); };
+
+      // Add category
+      $("addCat").onclick = ()=>{
+        const name = prompt("Category name:");
+        if(name===null) return;
+        const color = prompt("Color (hex):", "#3b82f6");
+        if(color===null) return;
+        OT.State.data.categories.push({
+          name: name.trim()||"New Category",
+          color: color.trim()||"#3b82f6",
+          tasks: [...OT.DEFAULT_TASKS]
+        });
+        OT.saveUser();
+        renderCats();
+        OT.toast("Category added", "ok");
+      };
+
+      // Data key
+      $("showKey").onclick = ()=>{
+        const payload = {
+          open: OT.State.data.open || [],
+          finished: OT.State.data.finished || [],
+          links: OT.State.data.links || [],
+          kb_texts: OT.State.data.kb_texts || [],
+          kb_tabs: OT.State.data.kb_tabs || [],
+          categories: OT.State.data.categories || [],
+          theme: OT.State.data.theme || "dark",
+        };
+        keyBox.value = OT.encodeKey(payload);
+        OT.toast("Key generated", "ok");
+      };
+
+      $("loadKey").onclick = ()=>{
+        const k = (keyBox.value||"").trim();
+        if(!k) return OT.toast("Paste a key first", "bad");
+        OT.loadFromKeyPreview(k);
+        OT.toast("Preview loaded", "ok");
+      };
+
+      $("restore").onclick = ()=>{
+        OT.restoreFromPreview();
+        location.reload();
+      };
+
+      renderCats();
+    })();
+  </script>
+</body>
+</html>

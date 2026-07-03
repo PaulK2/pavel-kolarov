@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <title>Notes • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">Open Orders</a>
+        <a href="finished.html">Finished</a>
+        <a href="notes.html" class="active">Notes</a>
+        <a href="links.html">Links</a>
+        <a href="kb.html">Knowledge Base</a>
+        <a href="settings.html">Settings</a>
+        <a href="info.html">Info</a>
+      </nav>
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    <section class="card">
+      <div class="card-h">
+        <h1 class="h2">Notes</h1>
+        <p class="muted">Notes are stored per order, like the Python app.</p>
+      </div>
+      <div class="card-b">
+        <div class="row">
+          <select id="sort" style="min-width:160px">
+            <option>Created</option>
+            <option>Name A→Z</option>
+            <option>Name Z→A</option>
+            <option>310x</option>
+            <option>42x</option>
+            <option>23x</option>
+          </select>
+          <select id="catFilter" style="min-width:200px"></select>
+        </div>
+        <div class="sep"></div>
+        <div id="list" class="stack"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+
+    (function(){
+      const $ = OT.byId;
+      const root = $("list");
+      const sortSel = $("sort");
+      const catFilter = $("catFilter");
+
+      function escapeHtml(s){
+        return String(s||"")
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      // FIX: fill category dropdown once (or preserve selection if ever refilled)
+      function fillCat(){
+        const current = catFilter.value || "All categories";
+
+        catFilter.innerHTML = "";
+        const all = document.createElement("option");
+        all.value = "All categories";
+        all.textContent = "All categories";
+        catFilter.appendChild(all);
+
+        OT.categoryNames().forEach(n=>{
+          const opt = document.createElement("option");
+          opt.value = n;
+          opt.textContent = n;
+          catFilter.appendChild(opt);
+        });
+
+        // restore selection if still exists
+        if ([...catFilter.options].some(o => o.value === current)) {
+          catFilter.value = current;
+        }
+      }
+
+      function sortOrders(arr){
+        const mode = sortSel.value || "Created";
+        if(mode === "Name A→Z") arr.sort((a,b)=> (a.name||"").localeCompare(b.name||"", undefined, {sensitivity:"base"}));
+        else if(mode === "Name Z→A") arr.sort((a,b)=> (b.name||"").localeCompare(a.name||"", undefined, {sensitivity:"base"}));
+        else if(mode === "310x") arr.sort((a,b)=> String(a.val310||"").localeCompare(String(b.val310||"")));
+        else if(mode === "42x") arr.sort((a,b)=> String(a.val42||"").localeCompare(String(b.val42||"")));
+        else if(mode === "23x") arr.sort((a,b)=> String(a.val23||"").localeCompare(String(b.val23||"")));
+        else arr.sort((a,b)=> (b.id||0) - (a.id||0));
+        return arr;
+      }
+
+      function render(){
+        OT.clear(root);
+
+        let arr = [...(OT.State.data.open||[])];
+
+        // Ensure notes array exists so rendering doesn't crash
+        arr.forEach(o => (o.notes ||= []));
+
+        const cat = catFilter.value || "All categories";
+        if(cat !== "All categories"){
+          arr = arr.filter(o => (o.category||"") === cat);
+        }
+
+        sortOrders(arr);
+
+        if(!arr.length){
+          root.appendChild(OT.el(`<div class="muted">No open orders.</div>`));
+          return;
+        }
+
+        arr.forEach(o=>{
+          const catObj = OT.categoryByName(o.category||"Default");
+
+          const history = o.notes
+            .map(n => `<div class="muted small">${n.ts} — ${escapeHtml(n.text).slice(0,160)}</div>`)
+            .join("");
+
+          const last = o.notes.length ? o.notes[o.notes.length-1].text : "";
+
+          const card = OT.el(`
+            <div class="card order" style="border-left-color:${catObj.color||"#3b82f6"}">
+              <div class="card-b">
+                <div class="row between">
+                  <div>
+                    <div class="title">${escapeHtml(o.name)}</div>
+                    <div class="meta">310x: ${escapeHtml(o.val310)} | 42x: ${escapeHtml(o.val42)} | Type: ${escapeHtml(o.category||"")}</div>
+                  </div>
+                  <button class="ghost" data-copylast ${last ? "" : "disabled"}>Copy last note</button>
+                </div>
+
+                <div class="sep"></div>
+
+                <textarea placeholder="Write a note..."></textarea>
+                <div class="row end" style="margin-top:10px">
+                  <button class="primary" data-save>Save Note</button>
+                </div>
+
+                <div class="sep"></div>
+                <div class="stack" data-history>
+                  ${history || `<div class="muted small">No notes yet.</div>`}
+                </div>
+              </div>
+            </div>
+          `);
+
+          const txt = card.querySelector("textarea");
+
+          card.querySelector("[data-save]").onclick = ()=>{
+            const t = (txt.value||"").trim();
+            if(!t) return OT.toast("Write a note first", "bad");
+            o.notes.push({ts: OT.nowTs(), text: t});
+            txt.value = "";
+            OT.saveUser();
+            OT.toast("Note saved", "ok");
+            render(); // refresh to show latest note (filters remain intact now)
+          };
+
+          const copyBtn = card.querySelector("[data-copylast]");
+          copyBtn.onclick = ()=>{
+            const t = o.notes.length ? o.notes[o.notes.length-1].text : "";
+            OT.copyToClipboard(t);
+          };
+
+          root.appendChild(card);
+        });
+      }
+
+      sortSel.addEventListener("change", render);
+      catFilter.addEventListener("change", render);
+
+      fillCat();   // IMPORTANT: do this once so it doesn't reset on render
+      render();
+    })();
+  </script>
+</body>
+</html>

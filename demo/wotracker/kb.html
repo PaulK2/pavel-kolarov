@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <title>Knowledge Base • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      
+    <nav class="nav">
+      <a href="index.html">Open Orders</a>
+      <a href="finished.html">Finished</a>
+      <a href="notes.html">Notes</a>
+      <a href="links.html">Links</a>
+      <a href="kb.html">Knowledge Base</a>
+      <a href="settings.html">Settings</a>
+      <a href="info.html">Info</a>
+    </nav>
+    
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    
+<div class="grid two">
+  <section class="card">
+    <div class="card-h">
+      <h1 class="h2">Knowledge Base</h1>
+      <p class="muted">Common texts + chart tabs (key/value rows).</p>
+    </div>
+    <div class="card-b stack">
+      <div class="row between">
+        <div><b>Common texts</b></div>
+        <button class="primary" id="addText">Add Text</button>
+      </div>
+      <div id="texts" class="stack"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h">
+      <h2 class="h2">Charts</h2>
+      <p class="muted">Tabs with colored headers and rows.</p>
+    </div>
+    <div class="card-b stack">
+      <div class="row between">
+        <select id="tabSel" style="min-width:240px"></select>
+        <div class="row end">
+          <button class="ghost" id="editTab">Edit Tab</button>
+          <button class="bad" id="removeTab">Remove Tab</button>
+          <button class="primary" id="addTab">Add Tab</button>
+        </div>
+      </div>
+
+      <div id="tabStrip" style="height:10px;border-radius:999px;border:1px solid var(--border)"></div>
+
+      <div class="row">
+        <input id="rowName" placeholder="Name" style="min-width:240px" />
+        <input id="rowValue" placeholder="Value" style="min-width:320px" />
+        <button class="primary" id="addRow">Add Row</button>
+      </div>
+
+      <div id="rows" class="stack"></div>
+    </div>
+  </section>
+</div>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+    
+(function(){
+  const $ = OT.byId;
+
+  OT.State.data.kb_texts ||= [];
+  OT.State.data.kb_tabs  ||= [{name:"General", color:"#3b82f6", rows:[]}];
+
+  const textsRoot = $("texts");
+  const tabSel = $("tabSel");
+  const rowsRoot = $("rows");
+  const strip = $("tabStrip");
+
+  function currentTab(){
+    const idx = tabSel.selectedIndex;
+    return OT.State.data.kb_tabs[idx] || OT.State.data.kb_tabs[0];
+  }
+
+  function renderTexts(){
+    OT.clear(textsRoot);
+    if(!OT.State.data.kb_texts.length){
+      textsRoot.appendChild(OT.el(`<div class="muted">No text entries yet.</div>`));
+      return;
+    }
+    OT.State.data.kb_texts.forEach((t, idx)=>{
+      const row = OT.el(`
+        <div class="card">
+          <div class="card-b row between">
+            <div style="white-space:pre-wrap">${escapeHtml(t)}</div>
+            <div class="row end">
+              <button class="ghost" data-copy>Copy</button>
+              <button class="ghost" data-edit>Edit</button>
+              <button class="bad" data-rm>Remove</button>
+            </div>
+          </div>
+        </div>
+      `);
+
+      row.querySelector("[data-copy]").onclick = ()=> OT.copyToClipboard(t);
+      row.querySelector("[data-rm]").onclick = ()=>{
+        if(!confirm("Remove this text entry?")) return;
+        OT.State.data.kb_texts.splice(idx,1);
+        OT.saveUser();
+        renderTexts();
+        OT.toast("Removed", "ok");
+      };
+      row.querySelector("[data-edit]").onclick = ()=>{
+        const v = prompt("Edit text:", t);
+        if(v === null) return;
+        OT.State.data.kb_texts[idx] = v;
+        OT.saveUser();
+        renderTexts();
+        OT.toast("Updated", "ok");
+      };
+
+      textsRoot.appendChild(row);
+    });
+  }
+
+  function renderTabs(){
+    tabSel.innerHTML="";
+    OT.State.data.kb_tabs.forEach(t=>{
+      const opt = document.createElement("option");
+      opt.textContent = t.name || "Tab";
+      tabSel.appendChild(opt);
+    });
+    if(tabSel.selectedIndex < 0) tabSel.selectedIndex = 0;
+  }
+
+  function renderRows(){
+    OT.clear(rowsRoot);
+    const t = currentTab();
+    strip.style.background = t.color || "#3b82f6";
+    if(!t.rows || !t.rows.length){
+      rowsRoot.appendChild(OT.el(`<div class="muted">No rows yet.</div>`));
+      return;
+    }
+
+    t.rows.forEach((r, idx)=>{
+      const row = OT.el(`
+        <div class="card">
+          <div class="card-b row between">
+            <div class="row" style="gap:16px">
+              <b>${escapeHtml(r.name||"")}</b>
+              <span class="muted">${escapeHtml(r.value||"")}</span>
+            </div>
+            <div class="row end">
+              <button class="ghost" data-copy>Copy value</button>
+              <button class="ghost" data-up>Up</button>
+              <button class="ghost" data-down>Down</button>
+              <button class="ghost" data-edit>Edit</button>
+              <button class="bad" data-rm>Remove</button>
+            </div>
+          </div>
+        </div>
+      `);
+
+      row.querySelector("[data-copy]").onclick = ()=> OT.copyToClipboard(r.value||"");
+      row.querySelector("[data-rm]").onclick = ()=>{
+        if(!confirm("Remove row?")) return;
+        t.rows.splice(idx,1);
+        OT.saveUser();
+        renderRows();
+      };
+      row.querySelector("[data-edit]").onclick = ()=>{
+        const n = prompt("Name:", r.name||"");
+        if(n === null) return;
+        const v = prompt("Value:", r.value||"");
+        if(v === null) return;
+        r.name = n; r.value = v;
+        OT.saveUser();
+        renderRows();
+      };
+      row.querySelector("[data-up]").onclick = ()=>{
+        if(idx===0) return;
+        [t.rows[idx-1], t.rows[idx]] = [t.rows[idx], t.rows[idx-1]];
+        OT.saveUser(); renderRows();
+      };
+      row.querySelector("[data-down]").onclick = ()=>{
+        if(idx>=t.rows.length-1) return;
+        [t.rows[idx+1], t.rows[idx]] = [t.rows[idx], t.rows[idx+1]];
+        OT.saveUser(); renderRows();
+      };
+
+      rowsRoot.appendChild(row);
+    });
+  }
+
+  $("addText").onclick = ()=>{
+    const v = prompt("New text:");
+    if(v===null) return;
+    const t = (v||"").trim();
+    if(!t) return OT.toast("Text required", "bad");
+    OT.State.data.kb_texts.push(t);
+    OT.saveUser();
+    renderTexts();
+    OT.toast("Text added", "ok");
+  };
+
+  $("addTab").onclick = ()=>{
+    const name = prompt("Tab name:");
+    if(name===null) return;
+    const color = prompt("Color (hex like #22c55e):", "#3b82f6");
+    if(color===null) return;
+    OT.State.data.kb_tabs.push({name: name.trim()||"New Tab", color: color.trim()||"#3b82f6", rows:[]});
+    OT.saveUser();
+    renderTabs();
+    tabSel.selectedIndex = OT.State.data.kb_tabs.length-1;
+    renderRows();
+    OT.toast("Tab added", "ok");
+  };
+
+  $("editTab").onclick = ()=>{
+    const t = currentTab();
+    const name = prompt("Tab name:", t.name||"");
+    if(name===null) return;
+    const color = prompt("Color:", t.color||"#3b82f6");
+    if(color===null) return;
+    t.name = name.trim()||"Tab";
+    t.color = color.trim()||"#3b82f6";
+    OT.saveUser();
+    renderTabs();
+    renderRows();
+    OT.toast("Tab updated", "ok");
+  };
+
+  $("removeTab").onclick = ()=>{
+    if(OT.State.data.kb_tabs.length<=1) return OT.toast("Need at least one tab", "bad");
+    const idx = tabSel.selectedIndex;
+    const t = currentTab();
+    if(!confirm(`Remove tab '${t.name}'?`)) return;
+    OT.State.data.kb_tabs.splice(idx,1);
+    OT.saveUser();
+    renderTabs();
+    renderRows();
+    OT.toast("Tab removed", "ok");
+  };
+
+  $("addRow").onclick = ()=>{
+    const t = currentTab();
+    const n = ($("rowName").value||"").trim();
+    const v = ($("rowValue").value||"").trim();
+    if(!n || !v) return OT.toast("Name and value required", "bad");
+    t.rows ||= [];
+    t.rows.push({name:n, value:v});
+    $("rowName").value=""; $("rowValue").value="";
+    OT.saveUser();
+    renderRows();
+    OT.toast("Row added", "ok");
+  };
+
+  tabSel.addEventListener("change", renderRows);
+
+  function escapeHtml(s){
+    return String(s||"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  renderTexts();
+  renderTabs();
+  renderRows();
+})();
+
+  </script>
+</body>
+</html>

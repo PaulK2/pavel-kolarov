@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Open Orders • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      
+    <nav class="nav">
+      <a href="index.html">Open Orders</a>
+      <a href="finished.html">Finished</a>
+      <a href="notes.html">Notes</a>
+      <a href="links.html">Links</a>
+      <a href="kb.html">Knowledge Base</a>
+      <a href="settings.html">Settings</a>
+      <a href="info.html">Info</a>
+    </nav>
+    
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    
+
+<section class="card">
+  <div class="card-h">
+    <h1 class="h2">Open Orders</h1>
+    <p class="muted">Search & filter at the top. Click an order to work through its checklist.</p>
+  </div>
+
+  <div class="card-b stack">
+    <div class="row between">
+      <div class="row">
+        <input id="search" placeholder="Search (name / 310 / 42 / 23)" style="min-width:320px" />
+        <select id="sort" style="min-width:160px">
+          <option>Created</option>
+          <option>Name A→Z</option>
+          <option>Name Z→A</option>
+          <option>310x</option>
+          <option>42x</option>
+          <option>23x</option>
+        </select>
+        <select id="catFilter" style="min-width:200px"></select>
+      </div>
+      <button class="primary" id="toggleAdd">+ Add order</button>
+    </div>
+
+    <div id="addPanel" class="card" style="display:none">
+      <div class="card-b">
+        <div class="row">
+          <input id="name" placeholder="Name" style="min-width:240px" />
+          <input id="v310" placeholder="310x" style="width:160px" />
+          <input id="v42" placeholder="42x" style="width:160px" />
+          <select id="category" style="min-width:190px"></select>
+          <button class="good" id="addBtn">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="orders" class="stack"></div>
+  </div>
+</section>
+
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+    
+(function(){
+  const $ = OT.byId;
+
+  // Ensure collections exist (for older imports)
+  OT.State.data.open ||= [];
+  OT.State.data.finished ||= [];
+  OT.State.data.links ||= [];
+  OT.State.data.kb_texts ||= [];
+  OT.State.data.kb_tabs ||= [{name:"General", color:"#3b82f6", rows:[]}];
+  OT.State.data.categories ||= [{name:"Default", color:"#3b82f6", tasks:[...OT.DEFAULT_TASKS]}];
+
+  const categorySel = $("category");
+  const catFilter = $("catFilter");
+  const sortSel = $("sort");
+  const searchInp = $("search");
+  const ordersRoot = $("orders");
+
+  const addPanel = $("addPanel");
+  const toggleAdd = $("toggleAdd");
+
+  // NEW: safe HTML escaping for notes preview
+  function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+  function fillCategorySelects(){
+    const names = OT.categoryNames();
+
+    // Add form category
+    categorySel.innerHTML = "";
+    names.forEach(n=>{
+      const opt=document.createElement("option"); opt.value=n; opt.textContent=n;
+      categorySel.appendChild(opt);
+    });
+
+    // Filter dropdown (keep current selection if possible)
+    const current = catFilter.value || "All categories";
+    catFilter.innerHTML = "";
+    const all = document.createElement("option");
+    all.value="All categories"; all.textContent="All categories";
+    catFilter.appendChild(all);
+    names.forEach(n=>{
+      const opt=document.createElement("option"); opt.value=n; opt.textContent=n;
+      catFilter.appendChild(opt);
+    });
+    catFilter.value = (Array.from(catFilter.options).some(o=>o.value===current)) ? current : "All categories";
+  }
+
+  function filteredOrders(){
+    const q = (searchInp.value||"").trim().toLowerCase();
+    const cat = catFilter.value || "All categories";
+    let arr = [...OT.State.data.open];
+
+    if(q){
+      arr = arr.filter(o=>{
+        return (o.name||"").toLowerCase().includes(q) ||
+               (o.val310||"").toLowerCase().includes(q) ||
+               (o.val42||"").toLowerCase().includes(q) ||
+               (o.val23||"").toLowerCase().includes(q);
+      });
+    }
+
+    if(cat !== "All categories"){
+      arr = arr.filter(o => (o.category||"") === cat);
+    }
+
+    const mode = sortSel.value || "Created";
+    if(mode === "Name A→Z") arr.sort((a,b)=> (a.name||"").localeCompare(b.name||"", undefined, {sensitivity:"base"}));
+    else if(mode === "Name Z→A") arr.sort((a,b)=> (b.name||"").localeCompare(a.name||"", undefined, {sensitivity:"base"}));
+    else if(mode === "310x") arr.sort((a,b)=> String(a.val310||"").localeCompare(String(b.val310||"")));
+    else if(mode === "42x") arr.sort((a,b)=> String(a.val42||"").localeCompare(String(b.val42||"")));
+    else if(mode === "23x") arr.sort((a,b)=> String(a.val23||"").localeCompare(String(b.val23||"")));
+    else arr.sort((a,b)=> (b.id||0) - (a.id||0));
+
+    return arr;
+  }
+
+  function orderHeader(o){
+    const cat = o.category ? ` | Type: ${o.category}` : "";
+    return `Order: ${o.name} | 310x: ${o.val310} | 42x: ${o.val42} | 23x: ${o.val23||""}${cat}`;
+  }
+
+  function render(){
+    fillCategorySelects();
+
+    OT.State.data.open.forEach(o=>{
+      // ensure minimal fields (safe if imported)
+      o.notes ||= [];
+      o.files ||= [];
+      o.val23 ||= "";
+      if(!o.tasks || !o.tasks.length){
+        const cat = OT.categoryByName(o.category||"Default");
+        o.tasks = (cat.tasks||OT.DEFAULT_TASKS).map(t=>({name:t, done:false}));
+      }
+    });
+
+    OT.clear(ordersRoot);
+    const list = filteredOrders();
+
+    if(!list.length){
+      ordersRoot.appendChild(OT.el(`<div class="muted">No orders to show.</div>`));
+      return;
+    }
+
+    list.forEach(o=>{
+      const cat = OT.categoryByName(o.category||"Default");
+
+      // NEW: last note preview (safe + trimmed)
+      const lastNote = (o.notes && o.notes.length)
+        ? escapeHtml(o.notes[o.notes.length - 1].text || "").slice(0, 220)
+        : "";
+
+      const card = OT.el(`
+        <div class="card order" style="border-left-color:${cat.color||"#3b82f6"}">
+          <div class="card-b">
+            <div class="row between">
+              <div>
+                <div class="title">${o.name}</div>
+                <div class="meta">${orderHeader(o)}</div>
+                ${lastNote ? `<div class="muted small" style="margin-top:6px"><b>Last note:</b> ${lastNote}</div>` : ``}
+              </div>
+              <div class="row end">
+                <button class="ghost" data-copy="310">Copy 310x</button>
+                <button class="ghost" data-copy="42">Copy 42x</button>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <input placeholder="23x" value="${o.val23||""}" data-23 style="width:170px" />
+              <button class="primary" data-23save>${(o.val23||"").trim() ? "Copy 23x" : "Save 23x"}</button>
+
+              <select data-cat style="min-width:170px"></select>
+
+              <div style="flex:1"></div>
+              <button class="good" data-finish>Finish</button>
+              <button class="bad" data-remove>Remove</button>
+            </div>
+
+            <div class="sep"></div>
+
+            <div class="row between">
+              <div><b>Attachments</b> <span class="muted small">(links)</span></div>
+              <button class="ghost" data-addfile>Add link…</button>
+            </div>
+            <div class="stack" data-files></div>
+
+            <div class="sep"></div>
+
+            <div class="row between">
+              <div><b>Checklist</b> <span class="muted small" data-count></span></div>
+              <button class="ghost" data-reset>Reset checklist</button>
+            </div>
+            <div class="checklist" data-checks></div>
+
+          </div>
+        </div>
+      `);
+
+      card.querySelector('[data-copy="310"]').onclick = ()=> OT.copyToClipboard(o.val310);
+      card.querySelector('[data-copy="42"]').onclick = ()=> OT.copyToClipboard(o.val42);
+
+      const inp23 = card.querySelector("[data-23]");
+      const btn23 = card.querySelector("[data-23save]");
+      btn23.onclick = ()=>{
+        const val = (inp23.value||"").trim();
+        if((o.val23||"").trim()){
+          OT.copyToClipboard(o.val23);
+        } else {
+          if(!val) return OT.toast("Enter a 23x value", "bad");
+          o.val23 = val;
+          btn23.textContent = "Copy 23x";
+          OT.saveUser();
+          OT.toast("23x saved", "ok");
+        }
+      };
+
+      const sel = card.querySelector("[data-cat]");
+      sel.innerHTML = "";
+      OT.categoryNames().forEach(n=>{
+        const opt=document.createElement("option"); opt.value=n; opt.textContent=n;
+        sel.appendChild(opt);
+      });
+      sel.value = o.category || "Default";
+      sel.onchange = ()=>{
+        o.category = sel.value;
+        const cat2 = OT.categoryByName(o.category);
+        o.tasks = (cat2.tasks||OT.DEFAULT_TASKS).map(t=>({name:t, done:false}));
+        OT.saveUser();
+        render();
+        OT.toast("Category updated", "ok");
+      };
+
+      card.querySelector("[data-finish]").onclick = ()=>{
+        OT.State.data.open = OT.State.data.open.filter(x=>x!==o);
+        OT.State.data.finished.push(o);
+        OT.saveUser();
+        render();
+        OT.toast("Order finished", "ok");
+      };
+
+      card.querySelector("[data-remove]").onclick = ()=>{
+        if(!confirm(`Remove order '${o.name}'?`)) return;
+        OT.State.data.open = OT.State.data.open.filter(x=>x!==o);
+        OT.State.data.finished = OT.State.data.finished.filter(x=>x!==o);
+        OT.saveUser();
+        render();
+        OT.toast("Order removed", "ok");
+      };
+
+      // attachments
+      const filesRoot = card.querySelector("[data-files]");
+      const renderFiles = ()=>{
+        OT.clear(filesRoot);
+        if(!o.files.length){
+          filesRoot.appendChild(OT.el(`<div class="muted small">No attachment links yet.</div>`));
+          return;
+        }
+        o.files.forEach((f, idx)=>{
+          const row = OT.el(`
+            <div class="row">
+              <a class="pill" href="${f.url||"#"}" target="_blank" rel="noreferrer">${f.name||"link"}</a>
+              <button class="bad" data-rm style="padding:8px 10px">Remove</button>
+            </div>
+          `);
+          row.querySelector("[data-rm]").onclick = ()=>{
+            o.files.splice(idx,1);
+            OT.saveUser();
+            renderFiles();
+          };
+          filesRoot.appendChild(row);
+        });
+      };
+      renderFiles();
+
+      card.querySelector("[data-addfile]").onclick = ()=>{
+        const name = prompt("Link name (e.g., invoice, portal):");
+        if(name === null) return;
+        const url = prompt("URL:");
+        if(url === null) return;
+        const n = (name||"").trim(), u = (url||"").trim();
+        if(!n || !u) return OT.toast("Name and URL required", "bad");
+        o.files.push({name:n, url:u});
+        OT.saveUser();
+        renderFiles();
+        OT.toast("Link added", "ok");
+      };
+
+      const checksRoot = card.querySelector("[data-checks]");
+      const countEl = card.querySelector("[data-count]");
+
+      function renderChecks(){
+        OT.clear(checksRoot);
+        const total = o.tasks.length;
+        const done = o.tasks.filter(t=>t.done).length;
+        countEl.textContent = `${done}/${total} done`;
+
+        o.tasks.forEach((t, idx)=>{
+          const row = OT.el(`
+            <label class="check ${t.done ? "done":""}">
+              <input type="checkbox" ${t.done?"checked":""} />
+              <span>${t.name}</span>
+            </label>
+          `);
+          row.querySelector("input").onchange = (e)=>{
+            t.done = e.target.checked;
+            OT.saveUser();
+            renderChecks();
+          };
+          checksRoot.appendChild(row);
+        });
+      }
+      renderChecks();
+
+      card.querySelector("[data-reset]").onclick = ()=>{
+        if(!confirm("Reset all checklist items to undone?")) return;
+        o.tasks.forEach(t=> t.done=false);
+        OT.saveUser();
+        renderChecks();
+        OT.toast("Checklist reset", "ok");
+      };
+
+      ordersRoot.appendChild(card);
+    });
+  }
+
+  $("addBtn").onclick = ()=>{
+    const name = ($("name").value||"").trim();
+    const v310 = ($("v310").value||"").trim();
+    const v42  = ($("v42").value||"").trim();
+    const cat  = ($("category").value||"Default").trim();
+
+    if(!name || !v310 || !v42) return OT.toast("Fill Name, 310x, 42x", "bad");
+    OT.State.data.open.push(OT.makeOrder({name, val310:v310, val42:v42, category:cat}));
+    $("name").value=""; $("v310").value=""; $("v42").value="";
+    OT.saveUser();
+    render();
+    OT.toast("Order added", "ok");
+  };
+
+  toggleAdd.onclick = ()=>{
+    const show = addPanel.style.display === "none";
+    addPanel.style.display = show ? "block" : "none";
+    toggleAdd.textContent = show ? "Hide add form" : "+ Add order";
+  };
+
+  ["input","change"].forEach(evt=>{
+    searchInp.addEventListener(evt, render);
+    sortSel.addEventListener(evt, render);
+    catFilter.addEventListener(evt, render);
+  });
+
+  fillCategorySelects();
+  render();
+})();
+
+    </script>
+</body>
+</html>

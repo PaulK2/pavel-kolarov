@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <title>Links • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      
+    <nav class="nav">
+      <a href="index.html">Open Orders</a>
+      <a href="finished.html">Finished</a>
+      <a href="notes.html">Notes</a>
+      <a href="links.html">Links</a>
+      <a href="kb.html">Knowledge Base</a>
+      <a href="settings.html">Settings</a>
+      <a href="info.html">Info</a>
+    </nav>
+    
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    
+<section class="card">
+  <div class="card-h">
+    <h1 class="h2">Links</h1>
+    <p class="muted">Quick links (like your Links tab).</p>
+  </div>
+  <div class="card-b stack">
+    <div class="row">
+      <input id="name" placeholder="Name (e.g., VPN Portal)" style="min-width:260px" />
+      <input id="url" placeholder="URL (https://...)" style="min-width:320px" />
+      <button class="primary" id="add">Add Link</button>
+    </div>
+    <div id="list" class="stack"></div>
+  </div>
+</section>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+    
+(function(){
+  const $ = OT.byId;
+  const root = $("list");
+
+  function render(){
+    OT.clear(root);
+    const arr = OT.State.data.links || [];
+    if(!arr.length){
+      root.appendChild(OT.el(`<div class="muted">No links yet.</div>`));
+      return;
+    }
+    arr.forEach((e, idx)=>{
+      const row = OT.el(`
+        <div class="card">
+          <div class="card-b row between">
+            <div class="row">
+              <a class="pill" href="${e.link||"#"}" target="_blank" rel="noreferrer"><b>${e.name||"Link"}</b></a>
+              <span class="muted small">${e.link||""}</span>
+            </div>
+            <div class="row end">
+              <button class="ghost" data-edit>Edit</button>
+              <button class="bad" data-rm>Remove</button>
+            </div>
+          </div>
+        </div>
+      `);
+
+      row.querySelector("[data-rm]").onclick = ()=>{
+        if(!confirm(`Remove link '${e.name||""}'?`)) return;
+        OT.State.data.links.splice(idx,1);
+        OT.saveUser();
+        render();
+        OT.toast("Link removed", "ok");
+      };
+
+      row.querySelector("[data-edit]").onclick = ()=>{
+        const name = prompt("Name:", e.name||"");
+        if(name === null) return;
+        const url = prompt("URL:", e.link||"");
+        if(url === null) return;
+        e.name = (name||"").trim();
+        e.link = (url||"").trim();
+        OT.saveUser();
+        render();
+        OT.toast("Link updated", "ok");
+      };
+
+      root.appendChild(row);
+    });
+  }
+
+  $("add").onclick = ()=>{
+    const name = ($("name").value||"").trim();
+    const url = ($("url").value||"").trim();
+    if(!name || !url) return OT.toast("Name and URL required", "bad");
+    OT.State.data.links ||= [];
+    OT.State.data.links.push({name, link:url});
+    $("name").value=""; $("url").value="";
+    OT.saveUser();
+    render();
+    OT.toast("Link added", "ok");
+  };
+
+  render();
+})();
+
+  </script>
+</body>
+</html>

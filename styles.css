@@ -762,6 +762,91 @@ footer {
 .footer-inner .footer-links a { color: var(--text-muted); }
 .footer-inner .footer-links a:hover { color: var(--accent-2); }
 
+/* ---------- Nav analog clock ---------- */
+
+.nav-clock {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: radial-gradient(circle at 35% 30%, var(--surface-2), var(--bg-elevated));
+  box-shadow: inset 0 0 10px rgba(109, 139, 255, 0.10), 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.nav-clock .clock-tick {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 2px;
+  height: 4px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--text-faint);
+}
+
+.nav-clock .hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform-origin: 50% 100%;
+  border-radius: 2px;
+}
+.nav-clock .hand-hour   { width: 3px; height: 9px;  margin-left: -1.5px; background: var(--text); }
+.nav-clock .hand-minute { width: 2px; height: 13px; margin-left: -1px;   background: var(--text-muted); }
+.nav-clock .hand-second { width: 1px; height: 15px; margin-left: -0.5px; background: var(--accent-2); }
+
+.nav-clock .clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---------- Water bar + fish ---------- */
+
+.water-zone {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  z-index: 95;
+  pointer-events: none;
+  background: rgba(148, 163, 199, 0.08);
+  overflow: hidden;
+}
+
+.water-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, rgba(109, 139, 255, 0.75), rgba(79, 216, 232, 0.9));
+  border-radius: 0 99px 99px 0;
+  box-shadow: 0 0 14px rgba(79, 216, 232, 0.5);
+}
+
+.fish {
+  position: fixed;
+  left: 0;
+  bottom: 7px;
+  z-index: 96;
+  font-size: 24px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fish, .water-zone { display: none; }
+}
+
 /* ---------- Reveal on scroll ---------- */
 
 .reveal {

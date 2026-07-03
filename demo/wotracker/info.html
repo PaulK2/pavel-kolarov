@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <title>Info • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      
+    <nav class="nav">
+      <a href="index.html">Open Orders</a>
+      <a href="finished.html">Finished</a>
+      <a href="notes.html">Notes</a>
+      <a href="links.html">Links</a>
+      <a href="kb.html">Knowledge Base</a>
+      <a href="settings.html">Settings</a>
+      <a href="info.html">Info</a>
+    </nav>
+    
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    
+<section class="card">
+  <div class="card-h">
+    <h1 class="h2">Info</h1>
+    <p class="muted">Web version 0.1. <br> Build Date: 15.01.2026 <br> Author: Pavel Kolarov <br> Email: pavel.kolarov@a1.bg / pavel.kolarov@extern.a1.at</p>
+  </div>
+  <div class="card-b stack">
+    <div><b>Version:</b> 0.1 (MVP)</div>
+    <div><b>Build date:</b> 2026-01-15</div>
+    <div class="muted">Web UI for active order tracking.</div>
+    <div class="sep"></div>
+    <div class="muted small">Based on A1 Interal Order Tracker Tool v.3.1. </div>
+  </div>
+</section>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+    
+  </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/ico" href="/favicon.ico">
+  <title>Finished • Order Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div>Web Order Tracker</div>
+        <div class="badge"><center>Web 0.1</center></div>
+      </div>
+
+      
+    <nav class="nav">
+      <a href="index.html">Open Orders</a>
+      <a href="finished.html">Finished</a>
+      <a href="notes.html">Notes</a>
+      <a href="links.html">Links</a>
+      <a href="kb.html">Knowledge Base</a>
+      <a href="settings.html">Settings</a>
+      <a href="info.html">Info</a>
+    </nav>
+    
+
+      <div class="userbox">
+        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill" data-open>Open: 0</div>
+        <div class="pill" data-finished>Finished: 0</div>
+        <button class="ghost" data-switch-user title="Switch user">Switch</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="previewBanner" class="banner">
+      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+    </div>
+
+    
+<section class="card">
+  <div class="card-h">
+    <h1 class="h2">Finished Orders</h1>
+    <p class="muted">Read-only view with restore option.</p>
+  </div>
+  <div class="card-b stack">
+    <div class="row">
+      <input id="search" placeholder="Search (name / 310 / 42 / 23)" style="min-width:260px" />
+      <button class="ghost" id="clear">Clear all finished</button>
+    </div>
+    <div id="list" class="stack"></div>
+  </div>
+</section>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    OT.initCommon();
+    
+(function(){
+  const $ = OT.byId;
+  const root = $("list");
+  const q = $("search");
+
+  function render(){
+    OT.clear(root);
+    const term = (q.value||"").trim().toLowerCase();
+    let arr = [...(OT.State.data.finished||[])];
+
+    if(term){
+      arr = arr.filter(o=>
+        (o.name||"").toLowerCase().includes(term) ||
+        (o.val310||"").toLowerCase().includes(term) ||
+        (o.val42||"").toLowerCase().includes(term) ||
+        (o.val23||"").toLowerCase().includes(term)
+      );
+    }
+
+    if(!arr.length){
+      root.appendChild(OT.el(`<div class="muted">No finished orders.</div>`));
+      return;
+    }
+
+    arr.sort((a,b)=> (b.id||0) - (a.id||0));
+
+    arr.forEach(o=>{
+      const cat = OT.categoryByName(o.category||"Default");
+      const card = OT.el(`
+        <div class="card order" style="border-left-color:${cat.color||"#3b82f6"}">
+          <div class="card-b">
+            <div class="row between">
+              <div>
+                <div class="title">${o.name}</div>
+                <div class="meta">310x: ${o.val310} | 42x: ${o.val42} | 23x: ${o.val23||""} | Type: ${o.category||""}</div>
+              </div>
+              <div class="row end">
+                <button class="ghost" data-restore>Restore</button>
+                <button class="bad" data-remove>Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+
+      card.querySelector("[data-restore]").onclick = ()=>{
+        OT.State.data.finished = OT.State.data.finished.filter(x=>x!==o);
+        OT.State.data.open.push(o);
+        OT.saveUser();
+        render();
+        OT.toast("Restored to open", "ok");
+      };
+
+      card.querySelector("[data-remove]").onclick = ()=>{
+        if(!confirm(`Remove finished order '${o.name}'?`)) return;
+        OT.State.data.finished = OT.State.data.finished.filter(x=>x!==o);
+        OT.saveUser();
+        render();
+        OT.toast("Removed", "ok");
+      };
+
+      root.appendChild(card);
+    });
+  }
+
+  $("clear").onclick = ()=>{
+    if(!confirm("Clear ALL finished orders?")) return;
+    OT.State.data.finished = [];
+    OT.saveUser();
+    render();
+    OT.toast("Cleared", "ok");
+  };
+
+  q.addEventListener("input", render);
+  render();
+})();
+
+  </script>
+</body>
+</html>

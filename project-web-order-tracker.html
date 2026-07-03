@@ -20,6 +20,13 @@
       <a class="logo-img" href="index.html" aria-label="Home">
         <img src="assets/logo-img.png" alt="Pavel Kolarov logo" />
       </a>
+      <div class="nav-clock" role="img" aria-label="Local time">
+        <span class="clock-tick"></span>
+        <span class="hand hand-hour"></span>
+        <span class="hand hand-minute"></span>
+        <span class="hand hand-second"></span>
+        <span class="clock-center"></span>
+      </div>
       <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
       <div class="nav-links">
         <a href="index.html">Home</a>
@@ -68,23 +75,23 @@
       </div>
     </div>
 
-    <section class="reveal" aria-label="Live preview">
-      <span class="section-label">Live Preview</span>
+    <section class="reveal" aria-label="Interactive demo">
+      <span class="section-label">Interactive Demo</span>
       <div class="preview-frame">
         <div class="preview-bar">
           <div class="dots"><span></span><span></span><span></span></div>
           <a class="preview-url" href="https://www.wotracker.net" target="_blank" rel="noopener noreferrer">wotracker.net</a>
         </div>
-        <div class="preview-viewport" id="preview-viewport" data-live-url="https://www.wotracker.net">
+        <div class="preview-viewport" id="preview-viewport" data-demo-url="demo/wotracker/index.html" data-live-url="https://www.wotracker.net">
           <img class="preview-shot" src="assets/projects/wotracker-preview.png" alt="Screenshot of the Web Order Tracker user selection screen" />
           <div class="preview-overlay">
-            <button class="btn btn-primary" type="button" id="load-preview">▶ Load Interactive Preview</button>
+            <button class="btn btn-primary" type="button" id="load-preview">▶ Launch Interactive Demo</button>
           </div>
         </div>
       </div>
       <p class="preview-note">
-        The interactive preview embeds the real app. If it doesn’t load in your browser,
-        use the “Visit Live Site” button above.
+        The demo runs the same app pre-loaded with sample orders, so you can click around freely —
+        the real thing lives at wotracker.net (its data is stored per browser, so it starts empty there).
       </p>
     </section>
   </main>
@@ -100,14 +107,65 @@
     </div>
   </footer>
 
+  <div class="water-zone" aria-hidden="true">
+    <div class="water-fill" id="water-fill"></div>
+  </div>
+  <div class="fish" id="fish" aria-hidden="true">🐟</div>
+
   <script src="main.js"></script>
   <script>
-    // Swap the screenshot for a live iframe on demand
+    // wotracker.net keeps its data in localStorage on its own origin, which the
+    // portfolio can't seed (browser security). The demo therefore runs a same-origin
+    // copy of the app under demo/wotracker/, seeded with sample orders below.
+    const DEMO_TASKS = ["REQUEST RECEIVED", "DESIGN DRAFT", "CLIENT APPROVAL", "PRINT / CUT", "QUALITY CHECK", "DELIVERY"];
+
+    function demoOrder(id, name, v310, v42, v23, doneCount, note) {
+      return {
+        id: id,
+        name: name,
+        val310: v310,
+        val42: v42,
+        val23: v23,
+        category: "Studio",
+        tasks: DEMO_TASKS.map((t, i) => ({ name: t, done: i < doneCount })),
+        notes: [{ text: note, ts: "2026-07-01 09:30:00" }],
+        files: []
+      };
+    }
+
+    function seedDemoData() {
+      const data = {
+        open: [
+          demoOrder(1001, "Order #1001 — Custom sticker pack — Pending — €45", "310-4501001", "42-88101", "", 1, "Status: Pending — waiting on material list."),
+          demoOrder(1002, "Order #1002 — Storefront vinyl branding — In progress — €180", "310-4501002", "42-88102", "23-5502", 3, "Status: In progress — design approved, cutting vinyl."),
+          demoOrder(1004, "Order #1004 — Business logo labels — Waiting for approval — €65", "310-4501004", "42-88104", "", 2, "Status: Waiting for client approval of the draft."),
+          demoOrder(1005, "Order #1005 — Event signage — Ready for delivery — €240", "310-4501005", "42-88105", "23-5505", 5, "Status: Ready for delivery — pickup scheduled.")
+        ],
+        finished: [
+          demoOrder(1003, "Order #1003 — Car decal set — Completed — €120", "310-4501003", "42-88103", "23-5503", 6, "Status: Completed — delivered and installed.")
+        ],
+        links: [{ name: "stickers.studio", link: "https://stickers.studio" }],
+        kb_texts: [],
+        kb_tabs: [{ name: "General", color: "#3b82f6", rows: [{ name: "Demo note", value: "Seeded demo data — feel free to click around." }] }],
+        categories: [{ name: "Studio", color: "#6d8bff", tasks: DEMO_TASKS }],
+        theme: "dark"
+      };
+      try {
+        localStorage.setItem("ot:users", JSON.stringify(["Demo"]));
+        localStorage.setItem("ot:currentUser", "Demo");
+        localStorage.setItem("ot:Demo", JSON.stringify(data));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
     document.getElementById("load-preview").addEventListener("click", () => {
       const viewport = document.getElementById("preview-viewport");
       const iframe = document.createElement("iframe");
-      iframe.src = viewport.dataset.liveUrl;
-      iframe.title = "Live preview of Web Order Tracker";
+      // Fall back to the live site if localStorage is unavailable
+      iframe.src = seedDemoData() ? viewport.dataset.demoUrl : viewport.dataset.liveUrl;
+      iframe.title = "Interactive demo of Web Order Tracker";
       iframe.loading = "lazy";
       viewport.appendChild(iframe);
       viewport.querySelector(".preview-overlay").remove();
