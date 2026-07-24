@@ -423,13 +423,14 @@ main.container {
   content: "";
   position: absolute;
   left: -1.6rem;
-  top: 2rem;
+  top: 2.35rem;
   transform: translateX(-4.5px);
   width: 11px;
   height: 11px;
   border-radius: 50%;
   background: var(--bg);
   border: 2px solid var(--accent);
+  z-index: 1;
 }
 
 /* Emphasise the Bosch requirements-engineering role */
@@ -442,11 +443,40 @@ main.container {
   box-shadow: 0 0 10px rgba(109, 139, 255, 0.7);
 }
 
+.timeline-hint {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  margin-bottom: 1rem;
+}
+
 .ti-head {
   display: flex;
   align-items: center;
   gap: 1.1rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  outline: none;
 }
+.ti-head::-webkit-details-marker { display: none; }
+.ti-head:focus-visible {
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 2px rgba(109, 139, 255, 0.55);
+}
+
+/* Expand / collapse chevron */
+.ti-arrow {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin: 0 0.15rem 0 0.1rem;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(45deg);
+  transition: transform 0.25s ease, border-color 0.2s ease;
+}
+.timeline-item[open] .ti-arrow { transform: rotate(-135deg); }
+.timeline-item:hover .ti-arrow { border-color: var(--accent); }
 
 .timeline-logo {
   flex: 0 0 52px;
@@ -486,7 +516,8 @@ main.container {
 .ti-points {
   list-style: none;
   margin: 1rem 0 0;
-  padding: 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--border);
   display: grid;
   gap: 0.45rem;
 }
@@ -512,11 +543,13 @@ main.container {
 
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
 .skill-group {
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(180deg, var(--surface), var(--bg-elevated));
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -525,12 +558,23 @@ main.container {
 .skill-group h3 {
   font-size: 1rem;
   margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
-.skill-group .chip-row { margin-top: 0; }
-.skill-group--secondary { opacity: 0.9; }
+.skill-group .chip-row { margin-top: 0; gap: 0.5rem; }
+.skill-group .chip { flex: 0 0 auto; }
+/* Push the note to the bottom so paired cards stay balanced */
+.skill-group .skill-note { margin-top: auto; padding-top: 0.9rem; }
+
+/* Design tools sit full-width as a clearly secondary row */
+.skill-group--secondary {
+  grid-column: 1 / -1;
+  opacity: 0.85;
+}
+.skill-group--secondary h3 { border-bottom: none; padding-bottom: 0; margin-bottom: 0.9rem; }
 
 .skill-tag {
   font-family: var(--font-body);
@@ -1120,10 +1164,14 @@ footer {
 
   .timeline { padding-left: 1.3rem; }
   .timeline-item { padding: 1.15rem 1.2rem; }
-  .timeline-item::before { left: -1.3rem; top: 1.7rem; }
+  .timeline-item::before { left: -1.3rem; top: 1.9rem; }
 
-  .ti-head { flex-wrap: wrap; gap: 0.7rem 0.9rem; }
-  .timeline-period { order: 3; margin-left: 4rem; }
+  .ti-head { flex-wrap: wrap; gap: 0.6rem 0.9rem; }
+  .ti-titles { flex: 1 1 auto; }
+  .timeline-period { order: 3; }
+  .ti-arrow { order: 4; margin-left: auto; }
+
+  .skills-grid { grid-template-columns: 1fr; }
 
   .cv-viewer iframe, .cv-viewer object { height: 70vh; }
 }
