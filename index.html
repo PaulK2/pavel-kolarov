@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pavel Kolarov — IT Delivery &amp; Systems Specialist</title>
+  <title>Pavel Kolarov — Systems Engineer | Requirements Engineering</title>
 
-  <meta name="description" content="Pavel Kolarov — globally-minded IT delivery and systems specialist with hands-on experience across Europe: enterprise IT, systems engineering, and creative design work." />
+  <meta name="description" content="Pavel Kolarov — Systems Engineer with requirements-engineering experience at Bosch, C/C++ and UML/SysML skills, enterprise infrastructure exposure, and fluent English and German. Based in Sofia, Bulgaria." />
+  <meta name="keywords" content="Systems Engineer, Requirements Engineering, UML, SysML, C++, C, IBM DOORS, Jama, Jira, Confluence, Technical Operations, Enterprise Infrastructure, Automotive Systems, Sofia Bulgaria" />
 
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
-  <meta property="og:title" content="Pavel Kolarov" />
-  <meta property="og:description" content="IT delivery and systems specialist with hands-on experience across Europe — enterprise IT, systems engineering, and creative design work." />
+  <meta property="og:title" content="Pavel Kolarov — Systems Engineer" />
+  <meta property="og:description" content="Systems Engineer with Bosch requirements-engineering experience, C/C++ and UML/SysML skills, enterprise infrastructure exposure, and fluent English and German." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://pavelkolarov.net/" />
 
@@ -20,8 +21,49 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css?v=2026" />
+  <link rel="stylesheet" href="styles.css?v=2026-07" />
   <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Pavel Kolarov",
+    "jobTitle": "Systems Engineer",
+    "description": "Systems Engineer with experience in requirements engineering, verification, and technical operations across automotive, enterprise infrastructure, and telecommunications. Skilled in C/C++, UML/SysML, IBM DOORS, Jama, Jira, and Confluence.",
+    "url": "https://pavelkolarov.net/",
+    "email": "mailto:pavel_kolarov@yahoo.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Sofia",
+      "addressCountry": "Bulgaria"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/pavelkolarov/",
+      "https://github.com/PaulK2"
+    ],
+    "knowsAbout": [
+      "Systems Engineering", "Requirements Engineering", "Requirements Traceability",
+      "Verification Planning", "UML", "SysML", "Risk Management", "C", "C++",
+      "IBM DOORS", "Jama", "Jira", "Confluence", "Technical Operations",
+      "Enterprise Infrastructure", "Automotive Systems"
+    ],
+    "knowsLanguage": [
+      { "@type": "Language", "name": "Bulgarian" },
+      { "@type": "Language", "name": "English" },
+      { "@type": "Language", "name": "German" },
+      { "@type": "Language", "name": "Russian" }
+    ],
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Technical University of Berlin"
+    },
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Telekom Austria Group"
+    }
+  }
+  </script>
 </head>
 
 <body>
@@ -40,6 +82,7 @@
       <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
       <div class="nav-links">
         <a href="index.html" class="active">Home</a>
+        <a href="#experience">Experience</a>
         <a href="projects.html">Projects</a>
         <a href="cv.html">CV</a>
         <a href="contact.html">Contact</a>
@@ -49,98 +92,292 @@
 
   <main class="container">
     <section class="hero" aria-label="Introduction">
-      <span class="hero-eyebrow"><span class="dot"></span> Open to new opportunities</span>
-      <h1>Hi, I’m <span class="gradient-text">Pavel Kolarov</span></h1>
+      <span class="hero-eyebrow"><span class="dot"></span> Open to Systems &amp; Requirements Engineering roles</span>
+      <h1><span class="gradient-text">Pavel Kolarov</span></h1>
+      <p class="hero-role">Systems Engineer <span class="sep">|</span> Requirements Engineering <span class="sep">|</span> Technical Operations</p>
+      <p class="hero-subrole">C/C++ · UML/SysML · Enterprise Infrastructure</p>
       <p class="hero-tagline">
-        A globally-minded IT delivery and systems specialist with hands-on experience across Europe.
-        I speak multiple languages, thrive in multicultural teams, and enjoy solving both human and
-        technical challenges — from enterprise IT systems to creative design work.
+        Systems Engineer with experience in requirements engineering, verification, and technical
+        operations across automotive, enterprise infrastructure, and telecommunications. Skilled in
+        C/C++, UML/SysML, IBM DOORS, Jama, Jira, and Confluence, with a structured and analytical
+        approach to complex technical challenges.
       </p>
-      <p class="hero-motto">Understand the goal, respect the people, and deliver with precision.</p>
+
       <div class="btn-row">
-        <a class="btn btn-primary" href="projects.html">View Projects →</a>
-        <a class="btn btn-ghost" href="cv.html">See My CV</a>
+        <a class="btn btn-primary" href="assets/PavelKolarovCV_2026.pdf" download="PavelKolarovCV_2026.pdf">⬇ Download CV</a>
+        <a class="btn btn-ghost" href="#experience">View Experience →</a>
+        <a class="btn btn-ghost" href="contact.html">Contact Me</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/pavelkolarov/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
       </div>
-      <div class="chip-row" aria-label="Focus areas">
-        <span class="chip">IT Service Delivery</span>
-        <span class="chip">Systems Engineering</span>
-        <span class="chip">Hardware Architecture</span>
-        <span class="chip">Enterprise Business</span>
-        <span class="chip">Custom Design</span>
+
+      <div class="chip-row" aria-label="Core focus and languages">
+        <span class="chip chip-accent">Requirements Engineering</span>
+        <span class="chip chip-accent">C / C++</span>
+        <span class="chip chip-accent">UML / SysML</span>
+        <span class="chip chip-accent">IBM DOORS</span>
+        <span class="chip">English — C1</span>
+        <span class="chip">German — C1</span>
       </div>
     </section>
 
-    <section class="home-section reveal" aria-label="What I do">
-      <span class="section-label">What I Do</span>
-      <h2 class="section-title">Technical delivery meets creative execution</h2>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="icon">🛰️</div>
-          <h3>IT Service Delivery</h3>
-          <p>Coordinating enterprise-grade IT services, post-sales business orders, and cross-team delivery for corporate clients.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon">⚙️</div>
-          <h3>Systems &amp; Hardware</h3>
-          <p>Systems engineering, requirements management, and multi-language hardware support across EMEA enterprise environments.</p>
-        </div>
-        <div class="feature-card">
-          <div class="icon">🎨</div>
-          <h3>Design &amp; Branding</h3>
-          <p>Running an independent design studio — custom stickers, vehicle graphics, and brand visuals from concept to finished product.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="home-section reveal" aria-label="Professional experience">
+    <!-- ============== EXPERIENCE ============== -->
+    <section class="home-section reveal" id="experience" aria-label="Professional experience">
       <span class="section-label">Experience</span>
-      <h2 class="section-title">Where I’ve worked</h2>
+      <h2 class="section-title">Professional experience</h2>
       <div class="timeline">
+
         <div class="timeline-item">
-          <div class="timeline-logo"><img src="assets/logos/a1.png" alt="A1 / Telekom Austria Group logo" /></div>
-          <div class="timeline-body">
-            <h3>Telekom Austria Group</h3>
-            <p class="role"><strong>ITS Delivery Specialist</strong> — enterprise order &amp; service delivery for corporate clients</p>
+          <div class="ti-head">
+            <div class="timeline-logo"><img src="assets/logos/a1.png" alt="A1 / Telekom Austria Group logo" /></div>
+            <div class="ti-titles">
+              <h3>Telekom Austria Group</h3>
+              <p class="role"><strong>Technical Delivery Specialist</strong> · Sofia, Bulgaria</p>
+            </div>
+            <span class="timeline-period">Jun 2025 – Present</span>
           </div>
-          <span class="timeline-period">2025 – Present</span>
+          <ul class="ti-points">
+            <li>Deliver enterprise network infrastructure for the A1 Business LAN team, from order validation through to customer rollout.</li>
+            <li>Validate complex Cisco Commerce orders in SAP SD against agreed configurations, licensing and delivery scope.</li>
+            <li>Coordinate business clients, field technicians and procurement, resolving specification conflicts before they delay delivery.</li>
+            <li>Investigate configuration and delivery faults across multiple sites, tracing root causes and closing out recurring issues.</li>
+            <li>Built an internal web tool giving the delivery team live visibility of order status (see Projects).</li>
+          </ul>
         </div>
+
         <div class="timeline-item">
-          <div class="timeline-logo"><img src="assets/logos/hpe.png" alt="Hewlett Packard Enterprise logo" /></div>
-          <div class="timeline-body">
-            <h3>Hewlett Packard Enterprise</h3>
-            <p class="role"><strong>Compute Hardware Support Engineer</strong> — multi-language server support across EMEA</p>
+          <div class="ti-head">
+            <div class="timeline-logo"><img src="assets/logos/hpe.png" alt="Hewlett Packard Enterprise logo" /></div>
+            <div class="ti-titles">
+              <h3>Hewlett Packard Enterprise</h3>
+              <p class="role"><strong>Compute Hardware Operations Engineer</strong> · Sofia, Bulgaria</p>
+            </div>
+            <span class="timeline-period">Nov 2024 – May 2025</span>
           </div>
-          <span class="timeline-period">2024 – 2025</span>
+          <ul class="ti-points">
+            <li>Diagnosed faults in mission-critical server infrastructure using vendor diagnostics, event logs and firmware analysis.</li>
+            <li>Isolated component, firmware and configuration causes before committing replacement parts.</li>
+            <li>Coordinated spare parts and on-site interventions with vendors and field engineers.</li>
+            <li>Resolved high-priority incidents on production systems under strict SLA conditions.</li>
+            <li>Streamlined the fault-identification workflow, cutting time to isolate failures.</li>
+          </ul>
         </div>
+
+        <div class="timeline-item timeline-item--feature">
+          <div class="ti-head">
+            <div class="timeline-logo"><img src="assets/logos/bosch.png" alt="Robert Bosch logo" /></div>
+            <div class="ti-titles">
+              <h3>Robert Bosch</h3>
+              <p class="role"><strong>System Engineer</strong> · Sofia, Bulgaria</p>
+            </div>
+            <span class="timeline-period">Sep 2022 – Oct 2024</span>
+          </div>
+          <ul class="ti-points">
+            <li>Specified system, software and hardware requirements for automotive projects including Mercedes-Benz Ambient Light and Bosch eBike Systems.</li>
+            <li>Authored requirements in IBM DOORS and Jama, holding traceability from stakeholder needs through to verification criteria.</li>
+            <li>Translated stakeholder input into user stories, then refined and prioritised backlog items in Jira and Confluence.</li>
+            <li>Modelled behaviour, interfaces and architecture in UML and SysML to align hardware, software and test disciplines.</li>
+            <li>Defined verification criteria and test cases, then reviewed results against the specified requirements.</li>
+            <li>Contributed to risk management, identifying failure modes and tracking mitigation measures.</li>
+            <li>Took part in design and requirement reviews across the product lifecycle with development, test, quality and project management.</li>
+          </ul>
+        </div>
+
         <div class="timeline-item">
-          <div class="timeline-logo"><img src="assets/logos/bosch.png" alt="Robert Bosch logo" /></div>
-          <div class="timeline-body">
-            <h3>Robert Bosch</h3>
-            <p class="role"><strong>System Engineer</strong> — system requirements and documentation in automotive</p>
+          <div class="ti-head">
+            <div class="timeline-logo"><img src="assets/logos/hcl.png" alt="HCL Technologies logo" /></div>
+            <div class="ti-titles">
+              <h3>C3i / HCL Technologies</h3>
+              <p class="role"><strong>Enterprise IT Support Analyst</strong> · Sofia, Bulgaria</p>
+            </div>
+            <span class="timeline-period">Oct 2021 – Mar 2022</span>
           </div>
-          <span class="timeline-period">2022 – 2024</span>
+          <ul class="ti-points">
+            <li>Supported AbbVie Germany, administering Active Directory accounts, groups and access rights.</li>
+            <li>Managed identity and access provisioning for onboarding in a regulated corporate environment.</li>
+            <li>Resolved software, hardware and access issues within SLA, with a high first-contact resolution rate.</li>
+          </ul>
         </div>
+
         <div class="timeline-item">
-          <div class="timeline-logo"><img src="assets/logos/hcl.png" alt="HCL Technologies logo" /></div>
-          <div class="timeline-body">
-            <h3>C3i Solutions (HCL Technologies)</h3>
-            <p class="role"><strong>IT Helpdesk Analyst</strong> — Active Directory and enterprise workplace support</p>
+          <div class="ti-head">
+            <div class="timeline-logo"><img src="assets/logos/amazon-blink.png" alt="Amazon Blink logo" /></div>
+            <div class="ti-titles">
+              <h3>Blink Home / Amazon</h3>
+              <p class="role"><strong>Technical Support Specialist</strong> · Sofia, Bulgaria</p>
+            </div>
+            <span class="timeline-period">Jan 2021 – Sep 2021</span>
           </div>
-          <span class="timeline-period">2021 – 2022</span>
+          <ul class="ti-points">
+            <li>Troubleshot connectivity and device faults on Blink IoT cameras across Wi-Fi, cloud sync and mobile app layers.</li>
+            <li>Escalated recurring defects to product and development teams with structured reproduction detail.</li>
+            <li>Identified failure patterns and improved the documentation used across support channels.</li>
+          </ul>
         </div>
-        <div class="timeline-item">
-          <div class="timeline-logo"><img src="assets/logos/amazon-blink.png" alt="Amazon Blink logo" /></div>
-          <div class="timeline-body">
-            <h3>Amazon “Blink for Home”</h3>
-            <p class="role"><strong>Technical Support Agent</strong> — networking and IT support for UK, US &amp; DE customers</p>
-          </div>
-          <span class="timeline-period">2021</span>
-        </div>
-      </div>
-      <div class="btn-row" style="margin-top: 1.6rem;">
-        <a class="btn btn-ghost" href="cv.html">Full career history in my CV →</a>
+
       </div>
     </section>
+
+    <!-- ============== SKILLS ============== -->
+    <section class="home-section reveal" aria-label="Skills">
+      <span class="section-label">Skills</span>
+      <h2 class="section-title">Technical skills</h2>
+      <div class="skills-grid">
+
+        <div class="skill-group">
+          <h3>Systems Engineering</h3>
+          <div class="chip-row">
+            <span class="chip">Requirements Engineering</span>
+            <span class="chip">Requirements Traceability</span>
+            <span class="chip">Verification Planning</span>
+            <span class="chip">UML</span>
+            <span class="chip">SysML</span>
+            <span class="chip">Risk Management</span>
+            <span class="chip">Design Reviews</span>
+            <span class="chip">Agile / Scrum</span>
+            <span class="chip">Technical Documentation</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3>Engineering &amp; Enterprise Tools</h3>
+          <div class="chip-row">
+            <span class="chip">IBM DOORS</span>
+            <span class="chip">Jama</span>
+            <span class="chip">Jira</span>
+            <span class="chip">Confluence</span>
+            <span class="chip">SAP SD</span>
+            <span class="chip">Microsoft Visio</span>
+            <span class="chip">Microsoft 365</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3>Programming</h3>
+          <div class="chip-row">
+            <span class="chip chip-accent">C</span>
+            <span class="chip chip-accent">C++</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">HTML / CSS</span>
+            <span class="chip">Git / GitHub</span>
+            <span class="chip chip-muted">Java · side projects</span>
+            <span class="chip chip-muted">Python · basics</span>
+          </div>
+          <p class="skill-note">C and C++ are my primary languages; Java and Python are used at a basic, side-project level.</p>
+        </div>
+
+        <div class="skill-group">
+          <h3>Infrastructure &amp; Technical Operations</h3>
+          <div class="chip-row">
+            <span class="chip">Enterprise Server Hardware</span>
+            <span class="chip">Hardware Diagnostics</span>
+            <span class="chip">Root Cause Analysis</span>
+            <span class="chip">System Logs</span>
+            <span class="chip">Active Directory</span>
+            <span class="chip">Virtual Machines</span>
+            <span class="chip">Networking Fundamentals</span>
+            <span class="chip">Cisco Order &amp; Delivery</span>
+            <span class="chip">Technical Troubleshooting</span>
+          </div>
+        </div>
+
+        <div class="skill-group skill-group--secondary">
+          <h3>Design Tools <span class="skill-tag">secondary</span></h3>
+          <div class="chip-row">
+            <span class="chip chip-muted">Photoshop</span>
+            <span class="chip chip-muted">Vector Graphics</span>
+            <span class="chip chip-muted">Vegas Pro</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============== ENGINEERING INTERESTS ============== -->
+    <section class="home-section reveal" aria-label="Engineering interests">
+      <span class="section-label">Engineering Interests</span>
+      <h2 class="section-title">Areas I follow &amp; want to work in</h2>
+      <div class="chip-row interests">
+        <span class="chip">🛰️ Space Systems</span>
+        <span class="chip">🔩 Embedded Systems</span>
+        <span class="chip">🚗 Automotive Systems</span>
+        <span class="chip">🖥️ Enterprise Infrastructure</span>
+        <span class="chip">🛠️ Technical Operations</span>
+        <span class="chip">🎮 Gaming Industry</span>
+      </div>
+      <p class="skill-note">Presented as areas of interest — not claimed professional experience.</p>
+    </section>
+
+    <!-- ============== EDUCATION & TRAINING ============== -->
+    <section class="home-section reveal" aria-label="Education and training">
+      <span class="section-label">Education &amp; Training</span>
+      <h2 class="section-title">Education &amp; training</h2>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-head">
+            <h3>BSc Computer Engineering</h3>
+            <span class="edu-status">Part-completed</span>
+          </div>
+          <p class="edu-org">Technical University of Berlin · 2019 – 2023</p>
+          <p class="edu-body">
+            Completed four semesters covering engineering fundamentals, electronics, embedded C
+            programming, technical mathematics, and computer systems. A practical electronics and
+            soldering course ran alongside the core curriculum.
+          </p>
+        </div>
+        <div class="edu-card">
+          <div class="edu-head">
+            <h3>Systems Engineering Trainee Programme</h3>
+            <span class="edu-status edu-status--alt">Programme</span>
+          </div>
+          <p class="edu-org">Robert Bosch · 2022</p>
+          <p class="edu-body">
+            Six-month structured programme led by senior system engineers, covering requirements
+            engineering, product lifecycle, verification and process.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== CERTIFICATIONS ============== -->
+    <section class="home-section reveal" aria-label="Certifications">
+      <span class="section-label">Certifications</span>
+      <h2 class="section-title">Certifications</h2>
+      <ul class="cert-list">
+        <li class="cert-card">Cybersecurity Basics</li>
+        <li class="cert-card">Applied Computer Science Principles</li>
+        <li class="cert-card">Technical English for Electrical Engineering</li>
+        <li class="cert-card">DSD II — German Language Diploma</li>
+      </ul>
+    </section>
+
+    <!-- ============== LANGUAGES ============== -->
+    <section class="home-section reveal" aria-label="Languages">
+      <span class="section-label">Languages</span>
+      <h2 class="section-title">Languages</h2>
+      <div class="lang-grid">
+        <div class="lang-card">
+          <span class="lang-name">English</span>
+          <span class="lang-level">C1</span>
+        </div>
+        <div class="lang-card">
+          <span class="lang-name">German</span>
+          <span class="lang-level">C1</span>
+        </div>
+        <div class="lang-card">
+          <span class="lang-name">Bulgarian</span>
+          <span class="lang-level lang-level--native">Native</span>
+        </div>
+        <div class="lang-card">
+          <span class="lang-name">Russian</span>
+          <span class="lang-level lang-level--alt">B2</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="btn-row" style="margin-top: 2.4rem;">
+      <a class="btn btn-primary" href="assets/PavelKolarovCV_2026.pdf" download="PavelKolarovCV_2026.pdf">⬇ Download CV</a>
+      <a class="btn btn-ghost" href="projects.html">View Projects →</a>
+    </div>
   </main>
 
   <footer>
