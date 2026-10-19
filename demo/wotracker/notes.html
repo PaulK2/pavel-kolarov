@@ -28,7 +28,7 @@
       </nav>
 
       <div class="userbox">
-        <div class="pill"><span class="muted">User:</span> <b data-user>—</b></div>
+        <div class="pill"><span class="muted">User:</span> <b data-user> - </b></div>
         <div class="pill" data-open>Open: 0</div>
         <div class="pill" data-finished>Finished: 0</div>
         <button class="ghost" data-switch-user title="Switch user">Switch</button>
@@ -38,7 +38,7 @@
 
   <main class="container">
     <div id="previewBanner" class="banner">
-      <b>Preview mode</b> – saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
+      <b>Preview mode</b> - saving is disabled. Go to <span class="kbd">Settings</span> to restore your data.
     </div>
 
     <section class="card">
@@ -141,7 +141,7 @@
           const catObj = OT.categoryByName(o.category||"Default");
 
           const history = o.notes
-            .map(n => `<div class="muted small">${n.ts} — ${escapeHtml(n.text).slice(0,160)}</div>`)
+            .map(n => `<div class="muted small">${n.ts} - ${escapeHtml(n.text).slice(0,160)}</div>`)
             .join("");
 
           const last = o.notes.length ? o.notes[o.notes.length-1].text : "";

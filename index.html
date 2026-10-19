@@ -2,406 +2,275 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pavel Kolarov — Systems Engineer | Requirements Engineering</title>
-
-  <meta name="description" content="Pavel Kolarov — Systems Engineer with requirements-engineering experience at Bosch, C/C++ and UML/SysML skills, enterprise infrastructure exposure, and fluent English and German. Based in Sofia, Bulgaria." />
-  <meta name="keywords" content="Systems Engineer, Requirements Engineering, UML, SysML, C++, C, IBM DOORS, Jama, Jira, Confluence, Technical Operations, Enterprise Infrastructure, Automotive Systems, Sofia Bulgaria" />
-
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-
-  <meta property="og:title" content="Pavel Kolarov — Systems Engineer" />
-  <meta property="og:description" content="Systems Engineer with Bosch requirements-engineering experience, C/C++ and UML/SysML skills, enterprise infrastructure exposure, and fluent English and German." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://pavelkolarov.net/" />
-
-  <meta name="theme-color" content="#070a12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Pavel Kolarov | Home</title>
+  <meta name="description" content="Pavel Kolarov - Systems Engineer. Engineering, creativity and independent products, explored through Veo." />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#081522" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
 
-  <link rel="stylesheet" href="styles.css?v=2026-07" />
-  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
-
-  <script type="application/ld+json">
+  <!-- Three.js is loaded as an ES module from a pinned CDN build; no build step required. -->
+  <script type="importmap">
   {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Pavel Kolarov",
-    "jobTitle": "Systems Engineer",
-    "description": "Systems Engineer with experience in requirements engineering, verification, and technical operations across automotive, enterprise infrastructure, and telecommunications. Skilled in C/C++, UML/SysML, IBM DOORS, Jama, Jira, and Confluence.",
-    "url": "https://pavelkolarov.net/",
-    "email": "mailto:pavel_kolarov@yahoo.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Sofia",
-      "addressCountry": "Bulgaria"
-    },
-    "sameAs": [
-      "https://www.linkedin.com/in/pavelkolarov/",
-      "https://github.com/PaulK2"
-    ],
-    "knowsAbout": [
-      "Systems Engineering", "Requirements Engineering", "Requirements Traceability",
-      "Verification Planning", "UML", "SysML", "Risk Management", "C", "C++",
-      "IBM DOORS", "Jama", "Jira", "Confluence", "Technical Operations",
-      "Enterprise Infrastructure", "Automotive Systems"
-    ],
-    "knowsLanguage": [
-      { "@type": "Language", "name": "Bulgarian" },
-      { "@type": "Language", "name": "English" },
-      { "@type": "Language", "name": "German" },
-      { "@type": "Language", "name": "Russian" }
-    ],
-    "alumniOf": {
-      "@type": "CollegeOrUniversity",
-      "name": "Technical University of Berlin"
-    },
-    "worksFor": {
-      "@type": "Organization",
-      "name": "Telekom Austria Group"
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
     }
   }
   </script>
 </head>
 
-<body>
-  <header>
-    <nav aria-label="Main navigation">
-      <a class="logo-img" href="index.html" aria-label="Home">
-        <img src="assets/logo-img.png" alt="Pavel Kolarov logo" />
-      </a>
-      <div class="nav-clock" role="img" aria-label="Local time">
-        <span class="clock-tick"></span>
-        <span class="hand hand-hour"></span>
-        <span class="hand hand-minute"></span>
-        <span class="hand hand-second"></span>
-        <span class="clock-center"></span>
-      </div>
-      <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
-      <div class="nav-links">
-        <a href="index.html" class="active">Home</a>
-        <a href="#experience">Experience</a>
-        <a href="projects.html">Projects</a>
-        <a href="cv.html">CV</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </nav>
-  </header>
+<body class="veo-route-home">
+  <!-- Single persistent 3D canvas. It is transparent and sits above the
+       content layer; Veo is drawn on it in the hero position (home) or the
+       dock corner (content pages), carrying between routes without a reload. -->
+  <div class="veo-stage" id="veo-stage" aria-hidden="true"></div>
 
-  <main class="container">
-    <section class="hero" aria-label="Introduction">
-      <span class="hero-eyebrow"><span class="dot"></span> Open to new opportunities</span>
-      <h1><span class="gradient-text">Pavel Kolarov</span></h1>
-      <p class="hero-role">Systems Engineer <span class="sep">|</span> Requirements Engineering <span class="sep">|</span> Technical Operations</p>
-      <p class="hero-subrole">C/C++ · UML/SysML · Enterprise Infrastructure</p>
-      <p class="hero-tagline">
-        Systems Engineer with experience in requirements engineering, verification, and technical
-        operations across automotive, enterprise infrastructure, and telecommunications. Skilled in
-        C/C++, UML/SysML, IBM DOORS, Jama, Jira, and Confluence, with a structured and analytical
-        approach to complex technical challenges.
-      </p>
+  <!-- Routed content (shown on content routes, scrollable, over the atrium). -->
+  <main class="veo-content" id="veo-content" hidden>
 
-      <div class="btn-row">
-        <a class="btn btn-primary" href="assets/PavelKolarovCV_2026.pdf" download="PavelKolarovCV_2026.pdf">⬇ Download CV</a>
-        <a class="btn btn-ghost" href="#experience">View Experience →</a>
-        <a class="btn btn-ghost" href="contact.html">Contact Me</a>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/in/pavelkolarov/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-      </div>
+    <!-- PROJECTS -->
+    <section class="veo-page" data-route="projects" hidden aria-label="Projects">
+      <header class="veo-page__head">
+        <span class="veo-page__eyebrow">Selected work</span>
+        <h1 class="veo-page__title">Projects</h1>
+        <p class="veo-page__lead">A small, curated set of products - built, shipped and maintained.</p>
+      </header>
+      <div class="veo-showroom">
+        <article class="veo-proj">
+          <div class="veo-proj__media"><img src="assets/projects/stickers-studio.png" alt="Stickers Studio website" loading="lazy" /></div>
+          <div class="veo-proj__body">
+            <h2>Stickers Studio</h2>
+            <div class="veo-proj__tags"><span>Design venture</span><span>Vinyl · Plates · Wall art</span></div>
+            <p>An independent design and customization venture - custom vinyl graphics, registration plates and wall art, from artwork through to the cutter.</p>
+            <a class="veo-proj__link" href="https://stickers.studio" target="_blank" rel="noopener noreferrer">Visit stickers.studio ↗</a>
+          </div>
+        </article>
 
-      <div class="chip-row" aria-label="Core focus and languages">
-        <span class="chip chip-accent">Requirements Engineering</span>
-        <span class="chip chip-accent">C / C++</span>
-        <span class="chip chip-accent">UML / SysML</span>
-        <span class="chip chip-accent">IBM DOORS</span>
-        <span class="chip">English — C1</span>
-        <span class="chip">German — C1</span>
+        <article class="veo-proj">
+          <div class="veo-proj__media veo-proj__media--fleet"><span>Delivery&nbsp;Fleet</span></div>
+          <div class="veo-proj__body">
+            <h2>Delivery Fleet Management</h2>
+            <div class="veo-proj__tags"><span>Operations software</span><span>Fleet · Routes · Payments</span></div>
+            <p>An application for running delivery operations: driver workflows, orders and routes, delivery status, customer details, cash and payment tracking, and operational reporting for fleet coordination.</p>
+          </div>
+        </article>
+
+        <article class="veo-proj">
+          <div class="veo-proj__media"><img src="assets/projects/glass-trading.png" alt="Glass Trading website" loading="lazy" /></div>
+          <div class="veo-proj__body">
+            <h2>Glass Trading</h2>
+            <div class="veo-proj__tags"><span>Collectible</span><span>Serial-numbered · Commerce</span></div>
+            <p>A premium serial-numbered collectible network - limited-edition glass coins with their own product design and a public score/price interface.</p>
+            <a class="veo-proj__link" href="https://glass.trading" target="_blank" rel="noopener noreferrer">Visit glass.trading ↗</a>
+          </div>
+        </article>
+
+        <article class="veo-proj">
+          <div class="veo-proj__media"><img src="assets/projects/personal-website.png" alt="pavelkolarov.net 3D redesign preview" loading="lazy" /></div>
+          <div class="veo-proj__body">
+            <h2>Personal Website</h2>
+            <div class="veo-proj__tags"><span>3D · WebGL</span><span>Three.js · Interaction design</span></div>
+            <p>This site - an independently designed interactive experience with a custom 3D character, radial navigation and a persistent companion. You are looking at it.</p>
+            <a class="veo-proj__link" href="https://github.com/PaulK2" target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a>
+          </div>
+        </article>
       </div>
     </section>
 
-    <!-- ============== EXPERIENCE ============== -->
-    <section class="home-section reveal" id="experience" aria-label="Professional experience">
-      <span class="section-label">Experience</span>
-      <h2 class="section-title">Professional experience</h2>
-      <p class="timeline-hint">Select a role to expand its details.</p>
-      <div class="timeline">
+    <!-- PORTFOLIO - about Pavel as a person/professional -->
+    <section class="veo-page" data-route="portfolio" hidden aria-label="Portfolio">
+      <header class="veo-page__head">
+        <span class="veo-page__eyebrow">Who is my friend</span>
+        <h1 class="veo-page__title">Portfolio</h1>
+      </header>
 
-        <details class="timeline-item">
-          <summary class="ti-head">
-            <div class="timeline-logo"><img src="assets/logos/a1.png" alt="A1 / Telekom Austria Group logo" /></div>
-            <div class="ti-titles">
-              <h3>Telekom Austria Group</h3>
-              <p class="role"><strong>Technical Delivery Specialist</strong> · Sofia, Bulgaria</p>
-            </div>
-            <span class="timeline-period">Jun 2025 – Present</span>
-            <span class="ti-arrow" aria-hidden="true"></span>
-          </summary>
-          <ul class="ti-points">
-            <li>Deliver enterprise network infrastructure for the A1 Business LAN team, from order validation through to customer rollout.</li>
-            <li>Validate complex Cisco Commerce orders in SAP SD against agreed configurations, licensing and delivery scope.</li>
-            <li>Coordinate business clients, field technicians and procurement, resolving specification conflicts before they delay delivery.</li>
-            <li>Investigate configuration and delivery faults across multiple sites, tracing root causes and closing out recurring issues.</li>
-            <li>Built an internal web tool giving the delivery team live visibility of order status (see Projects).</li>
-          </ul>
-        </details>
-
-        <details class="timeline-item">
-          <summary class="ti-head">
-            <div class="timeline-logo"><img src="assets/logos/hpe.png" alt="Hewlett Packard Enterprise logo" /></div>
-            <div class="ti-titles">
-              <h3>Hewlett Packard Enterprise</h3>
-              <p class="role"><strong>Compute Hardware Operations Engineer</strong> · Sofia, Bulgaria</p>
-            </div>
-            <span class="timeline-period">Nov 2024 – May 2025</span>
-            <span class="ti-arrow" aria-hidden="true"></span>
-          </summary>
-          <ul class="ti-points">
-            <li>Diagnosed faults in mission-critical server infrastructure using vendor diagnostics, event logs and firmware analysis.</li>
-            <li>Isolated component, firmware and configuration causes before committing replacement parts.</li>
-            <li>Coordinated spare parts and on-site interventions with vendors and field engineers.</li>
-            <li>Resolved high-priority incidents on production systems under strict SLA conditions.</li>
-            <li>Streamlined the fault-identification workflow, cutting time to isolate failures.</li>
-          </ul>
-        </details>
-
-        <details class="timeline-item timeline-item--feature">
-          <summary class="ti-head">
-            <div class="timeline-logo"><img src="assets/logos/bosch.png" alt="Robert Bosch logo" /></div>
-            <div class="ti-titles">
-              <h3>Robert Bosch</h3>
-              <p class="role"><strong>System Engineer</strong> · Sofia, Bulgaria</p>
-            </div>
-            <span class="timeline-period">Sep 2022 – Oct 2024</span>
-            <span class="ti-arrow" aria-hidden="true"></span>
-          </summary>
-          <ul class="ti-points">
-            <li>Specified system, software and hardware requirements for automotive projects including Mercedes-Benz Ambient Light and Bosch eBike Systems.</li>
-            <li>Authored requirements in IBM DOORS and Jama, holding traceability from stakeholder needs through to verification criteria.</li>
-            <li>Translated stakeholder input into user stories, then refined and prioritised backlog items in Jira and Confluence.</li>
-            <li>Modelled behaviour, interfaces and architecture in UML and SysML to align hardware, software and test disciplines.</li>
-            <li>Defined verification criteria and test cases, then reviewed results against the specified requirements.</li>
-            <li>Contributed to risk management, identifying failure modes and tracking mitigation measures.</li>
-            <li>Took part in design and requirement reviews across the product lifecycle with development, test, quality and project management.</li>
-          </ul>
-        </details>
-
-        <details class="timeline-item">
-          <summary class="ti-head">
-            <div class="timeline-logo"><img src="assets/logos/hcl.png" alt="HCL Technologies logo" /></div>
-            <div class="ti-titles">
-              <h3>C3i / HCL Technologies</h3>
-              <p class="role"><strong>Enterprise IT Support Analyst</strong> · Sofia, Bulgaria</p>
-            </div>
-            <span class="timeline-period">Oct 2021 – Mar 2022</span>
-            <span class="ti-arrow" aria-hidden="true"></span>
-          </summary>
-          <ul class="ti-points">
-            <li>Supported AbbVie Germany, administering Active Directory accounts, groups and access rights.</li>
-            <li>Managed identity and access provisioning for onboarding in a regulated corporate environment.</li>
-            <li>Resolved software, hardware and access issues within SLA, with a high first-contact resolution rate.</li>
-          </ul>
-        </details>
-
-        <details class="timeline-item">
-          <summary class="ti-head">
-            <div class="timeline-logo"><img src="assets/logos/amazon-blink.png" alt="Amazon Blink logo" /></div>
-            <div class="ti-titles">
-              <h3>Blink Home / Amazon</h3>
-              <p class="role"><strong>Technical Support Specialist</strong> · Sofia, Bulgaria</p>
-            </div>
-            <span class="timeline-period">Jan 2021 – Sep 2021</span>
-            <span class="ti-arrow" aria-hidden="true"></span>
-          </summary>
-          <ul class="ti-points">
-            <li>Troubleshot connectivity and device faults on Blink IoT cameras across Wi-Fi, cloud sync and mobile app layers.</li>
-            <li>Escalated recurring defects to product and development teams with structured reproduction detail.</li>
-            <li>Identified failure patterns and improved the documentation used across support channels.</li>
-          </ul>
-        </details>
-
-      </div>
-    </section>
-
-    <!-- ============== SKILLS ============== -->
-    <section class="home-section reveal" aria-label="Skills">
-      <span class="section-label">Skills</span>
-      <h2 class="section-title">Technical skills</h2>
-      <div class="skills-grid">
-
-        <div class="skill-group">
-          <h3>Systems Engineering</h3>
-          <div class="chip-row">
-            <span class="chip">Requirements Engineering</span>
-            <span class="chip">Requirements Traceability</span>
-            <span class="chip">Verification Planning</span>
-            <span class="chip">UML</span>
-            <span class="chip">SysML</span>
-            <span class="chip">Risk Management</span>
-            <span class="chip">Design Reviews</span>
-            <span class="chip">Agile / Scrum</span>
-            <span class="chip">Technical Documentation</span>
-          </div>
-        </div>
-
-        <div class="skill-group">
-          <h3>Engineering &amp; Enterprise Tools</h3>
-          <div class="chip-row">
-            <span class="chip">IBM DOORS</span>
-            <span class="chip">Jama</span>
-            <span class="chip">Jira</span>
-            <span class="chip">Confluence</span>
-            <span class="chip">SAP SD</span>
-            <span class="chip">Microsoft Visio</span>
-            <span class="chip">Microsoft 365</span>
-          </div>
-        </div>
-
-        <div class="skill-group">
-          <h3>Programming</h3>
-          <div class="chip-row">
-            <span class="chip chip-accent">C</span>
-            <span class="chip chip-accent">C++</span>
-            <span class="chip">JavaScript</span>
-            <span class="chip">HTML / CSS</span>
-            <span class="chip">Git / GitHub</span>
-            <span class="chip chip-muted">Java · side projects</span>
-            <span class="chip chip-muted">Python · basics</span>
-          </div>
-          <p class="skill-note">C and C++ are my primary languages; Java and Python are used at a basic, side-project level.</p>
-        </div>
-
-        <div class="skill-group">
-          <h3>Infrastructure &amp; Technical Operations</h3>
-          <div class="chip-row">
-            <span class="chip">Enterprise Server Hardware</span>
-            <span class="chip">Hardware Diagnostics</span>
-            <span class="chip">Root Cause Analysis</span>
-            <span class="chip">System Logs</span>
-            <span class="chip">Active Directory</span>
-            <span class="chip">Virtual Machines</span>
-            <span class="chip">Networking Fundamentals</span>
-            <span class="chip">Cisco Order &amp; Delivery</span>
-            <span class="chip">Technical Troubleshooting</span>
-          </div>
-        </div>
-
-        <div class="skill-group skill-group--secondary">
-          <h3>Design Tools <span class="skill-tag">secondary</span></h3>
-          <div class="chip-row">
-            <span class="chip chip-muted">Photoshop</span>
-            <span class="chip chip-muted">Vector Graphics</span>
-            <span class="chip chip-muted">Vegas Pro</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ============== ENGINEERING INTERESTS ============== -->
-    <section class="home-section reveal" aria-label="Engineering interests">
-      <span class="section-label">Engineering Interests</span>
-      <h2 class="section-title">Areas I follow &amp; want to work in</h2>
-      <div class="chip-row interests">
-        <span class="chip">🛰️ Space Systems</span>
-        <span class="chip">🔩 Embedded Systems</span>
-        <span class="chip">🚗 Automotive Systems</span>
-        <span class="chip">🖥️ Enterprise Infrastructure</span>
-        <span class="chip">🛠️ Technical Operations</span>
-        <span class="chip">🎮 Gaming Industry</span>
-      </div>
-      <p class="skill-note">Presented as areas of interest — not claimed professional experience.</p>
-    </section>
-
-    <!-- ============== EDUCATION & TRAINING ============== -->
-    <section class="home-section reveal" aria-label="Education and training">
-      <span class="section-label">Education &amp; Training</span>
-      <h2 class="section-title">Education &amp; training</h2>
-      <div class="edu-grid">
-        <div class="edu-card">
-          <div class="edu-head">
-            <h3>BSc Computer Engineering</h3>
-            <span class="edu-status">Part-completed</span>
-          </div>
-          <p class="edu-org">Technical University of Berlin · 2019 – 2023</p>
-          <p class="edu-body">
-            Completed four semesters covering engineering fundamentals, electronics, embedded C
-            programming, technical mathematics, and computer systems. A practical electronics and
-            soldering course ran alongside the core curriculum.
+      <div class="veo-folio">
+        <article class="veo-folio__panel veo-folio__about">
+          <span class="veo-folio__no">01 - About</span>
+          <p>
+            Pavel is an <strong>engineer</strong> who turns complex technical problems into clear,
+            structured solutions. He works across <strong>software</strong>, <strong>enterprise
+            infrastructure</strong> and <strong>technical operations</strong>, and picks up new
+            tools and domains quickly.
           </p>
-        </div>
-        <div class="edu-card">
-          <div class="edu-head">
-            <h3>Systems Engineering Trainee Programme</h3>
-            <span class="edu-status edu-status--alt">Programme</span>
+          <p>Analytical and methodical, he is comfortable owning a problem end to end - investigating, documenting and seeing it through with the right people.</p>
+        </article>
+
+        <article class="veo-folio__panel">
+          <span class="veo-folio__no">02 - Capabilities</span>
+          <div class="veo-folio__caps">
+            <div><h3>Engineering &amp; Analysis</h3><p>Analytical problem solving · Root-cause analysis · Technical documentation · Design reviews · Risk management · Agile / Scrum</p></div>
+            <div><h3>Software</h3><p>C · C++ · JavaScript · HTML / CSS · Git / GitHub <span class="veo-folio__muted">(Java &amp; Python at a basic, side-project level)</span></p></div>
+            <div><h3>Enterprise &amp; Technical Operations</h3><p>Enterprise server hardware · Hardware diagnostics · Root-cause analysis · System logs · Active Directory · Networking fundamentals · Troubleshooting</p></div>
+            <div><h3>Tools</h3><p>Jira · Confluence · ServiceNow · SAP ERP · Microsoft 365 · Microsoft Visio · Git / GitHub</p></div>
           </div>
-          <p class="edu-org">Robert Bosch · 2022</p>
-          <p class="edu-body">
-            Six-month structured programme led by senior system engineers, covering requirements
-            engineering, product lifecycle, verification and process.
-          </p>
+        </article>
+
+        <div class="veo-folio__row">
+          <article class="veo-folio__panel">
+            <span class="veo-folio__no">03 - Education</span>
+            <div class="veo-folio__edu">
+              <h3>BSc Computer Engineering <span class="veo-folio__muted">· part-completed</span></h3>
+              <p>Technical University of Berlin · 2019 - 2023</p>
+            </div>
+            <div class="veo-folio__edu">
+              <h3>Systems Engineering Trainee Programme</h3>
+              <p>Robert Bosch · 2022 · six-month programme</p>
+            </div>
+          </article>
+
+          <article class="veo-folio__panel">
+            <span class="veo-folio__no">04 - Certifications</span>
+            <ul class="veo-folio__list">
+              <li>Cybersecurity Basics</li>
+              <li>Applied Computer Science Principles</li>
+              <li>Technical English for Electrical Engineering</li>
+              <li>DSD II - German Language Diploma</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="veo-folio__row">
+          <article class="veo-folio__panel">
+            <span class="veo-folio__no">05 - Languages</span>
+            <div class="veo-folio__langs">
+              <span><strong>Bulgarian</strong> Native</span>
+              <span><strong>English</strong> C1</span>
+              <span><strong>German</strong> C1</span>
+              <span><strong>Russian</strong> B2</span>
+            </div>
+          </article>
+
+          <article class="veo-folio__panel">
+            <span class="veo-folio__no">06 - Interests</span>
+            <div class="veo-folio__tags">
+              <span>Space Systems</span><span>Embedded Systems</span><span>Automotive Systems</span>
+              <span>Enterprise Infrastructure</span><span>Technical Operations</span><span>Gaming Industry</span>
+            </div>
+            <p class="veo-folio__muted">Areas Pavel follows and wants to work in - not claimed professional experience.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- ============== CERTIFICATIONS ============== -->
-    <section class="home-section reveal" aria-label="Certifications">
-      <span class="section-label">Certifications</span>
-      <h2 class="section-title">Certifications</h2>
-      <ul class="cert-list">
-        <li class="cert-card">Cybersecurity Basics</li>
-        <li class="cert-card">Applied Computer Science Principles</li>
-        <li class="cert-card">Technical English for Electrical Engineering</li>
-        <li class="cert-card">DSD II — German Language Diploma</li>
-      </ul>
+    <!-- EXPERIENCE -->
+    <section class="veo-page" data-route="experience" hidden aria-label="Experience">
+      <header class="veo-page__head">
+        <span class="veo-page__eyebrow">Career</span>
+        <h1 class="veo-page__title">Experience</h1>
+        <p class="veo-page__lead">Engineering and technical operations.</p>
+      </header>
+      <ol class="veo-xp">
+        <li>
+          <span class="veo-xp__when">June 2025 - October 2026</span>
+          <a class="veo-xp__logo" href="https://www.a1.group" target="_blank" rel="noopener noreferrer" aria-label="Telekom Austria Group website"><img src="assets/logos/a1.png" alt="A1 / Telekom Austria Group logo" loading="lazy" /></a>
+          <div><strong>Technical Delivery Specialist</strong> · Telekom Austria Group</div>
+        </li>
+        <li>
+          <span class="veo-xp__when">November 2024 - May 2025</span>
+          <a class="veo-xp__logo veo-xp__logo--hpe" href="https://www.hpe.com" target="_blank" rel="noopener noreferrer" aria-label="Hewlett Packard Enterprise website"><img src="assets/logos/hpe.png" alt="Hewlett Packard Enterprise logo" loading="lazy" /></a>
+          <div><strong>Compute Hardware Operations Engineer</strong> · Hewlett Packard Enterprise</div>
+        </li>
+        <li>
+          <span class="veo-xp__when">September 2022 - October 2024</span>
+          <a class="veo-xp__logo" href="https://www.bosch.com" target="_blank" rel="noopener noreferrer" aria-label="Robert Bosch website"><img src="assets/logos/bosch.png" alt="Robert Bosch logo" loading="lazy" /></a>
+          <div><strong>System Engineer</strong> · Robert Bosch</div>
+        </li>
+        <li>
+          <span class="veo-xp__when">October 2021 - March 2022</span>
+          <a class="veo-xp__logo" href="https://www.hcltech.com" target="_blank" rel="noopener noreferrer" aria-label="HCL Technologies website"><img src="assets/logos/hcl.png" alt="HCL Technologies logo" loading="lazy" /></a>
+          <div><strong>Enterprise IT Support Analyst</strong> · C3i / HCL Technologies</div>
+        </li>
+        <li>
+          <span class="veo-xp__when">January 2021 - September 2021</span>
+          <a class="veo-xp__logo" href="https://blinkforhome.com" target="_blank" rel="noopener noreferrer" aria-label="Blink website"><img src="assets/logos/amazon-blink.png" alt="Blink / Amazon logo" loading="lazy" /></a>
+          <div><strong>Technical Support Specialist</strong> · Blink Home / Amazon</div>
+        </li>
+      </ol>
+      <a class="veo-proj__link" href="assets/PavelKolarovCV_2026.pdf" download>⬇ Download full CV</a>
     </section>
 
-    <!-- ============== LANGUAGES ============== -->
-    <section class="home-section reveal" aria-label="Languages">
-      <span class="section-label">Languages</span>
-      <h2 class="section-title">Languages</h2>
-      <div class="lang-grid">
-        <div class="lang-card">
-          <span class="lang-name">English</span>
-          <span class="lang-level">C1</span>
-        </div>
-        <div class="lang-card">
-          <span class="lang-name">German</span>
-          <span class="lang-level">C1</span>
-        </div>
-        <div class="lang-card">
-          <span class="lang-name">Bulgarian</span>
-          <span class="lang-level lang-level--native">Native</span>
-        </div>
-        <div class="lang-card">
-          <span class="lang-name">Russian</span>
-          <span class="lang-level lang-level--alt">B2</span>
-        </div>
+    <!-- CONTACT -->
+    <section class="veo-page" data-route="contact" hidden aria-label="Contact">
+      <header class="veo-page__head">
+        <span class="veo-page__eyebrow">Say hello</span>
+        <h1 class="veo-page__title">Contact</h1>
+        <p class="veo-page__lead">Open to new opportunities. The quickest way to reach me:</p>
+      </header>
+      <div class="veo-contact">
+        <a href="mailto:pavel_kolarov@yahoo.com">✉ pavel_kolarov@yahoo.com</a>
+        <a href="https://www.linkedin.com/in/pavelkolarov/" target="_blank" rel="noopener noreferrer">in · LinkedIn ↗</a>
+        <a href="https://github.com/PaulK2" target="_blank" rel="noopener noreferrer">⌥ GitHub ↗</a>
       </div>
     </section>
 
-    <div class="btn-row" style="margin-top: 2.4rem;">
-      <a class="btn btn-primary" href="assets/PavelKolarovCV_2026.pdf" download="PavelKolarovCV_2026.pdf">⬇ Download CV</a>
-      <a class="btn btn-ghost" href="projects.html">View Projects →</a>
-    </div>
   </main>
 
-  <footer>
-    <div class="footer-inner">
-      <span>© <span class="year"></span> Pavel Kolarov</span>
-      <div class="footer-links">
-        <a href="projects.html">Projects</a>
-        <a href="cv.html">CV</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
+  <!-- Subtle branding only - no navigation lives in the header. -->
+  <header class="veo-brand">
+    <span class="veo-brand__name">PAVEL&nbsp;KOLAROV</span>
+    <span class="veo-brand__tag">Engineering · Creativity · Independent Products</span>
+  </header>
+
+  <!-- Radial navigation (home only). Real links so routing works without WebGL. -->
+  <nav class="veo-nav" id="veo-nav" aria-label="Primary navigation">
+    <a class="veo-nav__item veo-nav__item--projects is-locked" href="#/projects" data-veo-dir="up-left" data-route="projects" aria-disabled="true">
+      <span class="veo-nav__icon" aria-hidden="true">◆</span>
+      <span class="veo-nav__label">Projects</span>
+    </a>
+    <a class="veo-nav__item veo-nav__item--portfolio" href="#/portfolio" data-veo-dir="up-right" data-route="portfolio">
+      <span class="veo-nav__icon" aria-hidden="true">❖</span>
+      <span class="veo-nav__label">Portfolio</span>
+    </a>
+    <a class="veo-nav__item veo-nav__item--experience" href="#/experience" data-veo-dir="down-right" data-route="experience">
+      <span class="veo-nav__icon" aria-hidden="true">▲</span>
+      <span class="veo-nav__label">Experience</span>
+    </a>
+    <a class="veo-nav__item veo-nav__item--contact" href="#/contact" data-veo-dir="down-left" data-route="contact">
+      <span class="veo-nav__icon" aria-hidden="true">✉</span>
+      <span class="veo-nav__label">Contact</span>
+    </a>
+  </nav>
+
+  <!-- Veo's dock - persistent companion on content routes (spec §7).
+       No "Return Home" button: docked Veo himself is the return control. -->
+  <div class="veo-dock" id="veo-dock" hidden>
+    <time class="veo-dock__clock" id="veo-dock-clock" aria-label="Local time">--:--</time>
+  </div>
+  <!-- Invisible, accessible control over docked Veo: click/Enter returns home. -->
+  <button class="veo-home-hit" id="veo-home-hit" type="button" aria-label="Return to home" hidden></button>
+
+  <!-- Veo's speech bubble (one at a time). -->
+  <div class="veo-speech" id="veo-speech" role="status" aria-live="polite" hidden><span class="veo-speech__text" id="veo-speech-text"></span></div>
+
+  <!-- Decorative game-startup status detail (home only, very low contrast). -->
+  <div class="veo-status" id="veo-status" aria-hidden="true">
+    <span>PK / WORLD 01</span>
+    <span class="veo-status__state">VEO ONLINE</span>
+    <span class="veo-status__clock" id="veo-status-clock">--:--</span>
+  </div>
+
+  <!-- Unobtrusive skip-intro control (home only). -->
+  <button class="veo-skip" id="veo-skip" type="button">Skip intro</button>
+
+  <noscript>
+    <div class="veo-fallback-note">This experience uses JavaScript. Use the navigation links to explore.</div>
+  </noscript>
+
+  <footer class="veo-footer">
+    <span>© <span class="veo-year"></span> Pavel Kolarov</span>
   </footer>
 
-  <div class="water-zone" aria-hidden="true">
-    <div class="water-fill" id="water-fill"></div>
-  </div>
-  <div class="fish" id="fish" aria-hidden="true">🐟</div>
-
-  <script src="main.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>

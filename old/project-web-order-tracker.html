@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Order Tracker — Pavel Kolarov</title>
-  <meta name="description" content="Web Order Tracker — a functional internal order-tracking platform built with HTML, CSS, and JavaScript. Live at wotracker.net." />
+  <title>Pavel Kolarov | Web Order Tracker</title>
+  <meta name="description" content="Web Order Tracker - a functional internal order-tracking platform built with HTML, CSS, and JavaScript. Live at wotracker.net." />
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <meta name="theme-color" content="#070a12" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,8 +47,7 @@
       <p class="page-intro">
         A functional internal order-tracking platform built with HTML, CSS, and JavaScript.
         It manages open and finished orders, per-user workspaces stored in the browser,
-        JSON import/export for moving data between machines, and a built-in knowledge base —
-        all in a fast, dependency-free web app.
+        JSON import/export for moving data between machines, and a built-in knowledge base - all in a fast, dependency-free web app.
       </p>
       <div class="project-links">
         <a class="btn btn-primary" href="https://www.wotracker.net" target="_blank" rel="noopener noreferrer">Visit Live Site ↗</a>
@@ -91,8 +90,7 @@
         </div>
       </div>
       <p class="preview-note">
-        The demo runs the same app pre-loaded with sample orders, so you can click around freely —
-        the real thing lives at wotracker.net (its data is stored per browser, so it starts empty there).
+        The demo runs the same app pre-loaded with sample orders, so you can click around freely - the real thing lives at wotracker.net (its data is stored per browser, so it starts empty there).
       </p>
     </section>
   </main>
@@ -137,17 +135,17 @@
     function seedDemoData() {
       const data = {
         open: [
-          demoOrder(1001, "Order #1001 — Custom sticker pack — Pending — €45", "310-4501001", "42-88101", "", 1, "Status: Pending — waiting on material list."),
-          demoOrder(1002, "Order #1002 — Storefront vinyl branding — In progress — €180", "310-4501002", "42-88102", "23-5502", 3, "Status: In progress — design approved, cutting vinyl."),
-          demoOrder(1004, "Order #1004 — Business logo labels — Waiting for approval — €65", "310-4501004", "42-88104", "", 2, "Status: Waiting for client approval of the draft."),
-          demoOrder(1005, "Order #1005 — Event signage — Ready for delivery — €240", "310-4501005", "42-88105", "23-5505", 5, "Status: Ready for delivery — pickup scheduled.")
+          demoOrder(1001, "Order #1001 - Custom sticker pack - Pending - €45", "310-4501001", "42-88101", "", 1, "Status: Pending - waiting on material list."),
+          demoOrder(1002, "Order #1002 - Storefront vinyl branding - In progress - €180", "310-4501002", "42-88102", "23-5502", 3, "Status: In progress - design approved, cutting vinyl."),
+          demoOrder(1004, "Order #1004 - Business logo labels - Waiting for approval - €65", "310-4501004", "42-88104", "", 2, "Status: Waiting for client approval of the draft."),
+          demoOrder(1005, "Order #1005 - Event signage - Ready for delivery - €240", "310-4501005", "42-88105", "23-5505", 5, "Status: Ready for delivery - pickup scheduled.")
         ],
         finished: [
-          demoOrder(1003, "Order #1003 — Car decal set — Completed — €120", "310-4501003", "42-88103", "23-5503", 6, "Status: Completed — delivered and installed.")
+          demoOrder(1003, "Order #1003 - Car decal set - Completed - €120", "310-4501003", "42-88103", "23-5503", 6, "Status: Completed - delivered and installed.")
         ],
         links: [{ name: "stickers.studio", link: "https://stickers.studio" }],
         kb_texts: [],
-        kb_tabs: [{ name: "General", color: "#3b82f6", rows: [{ name: "Demo note", value: "Seeded demo data — feel free to click around." }] }],
+        kb_tabs: [{ name: "General", color: "#3b82f6", rows: [{ name: "Demo note", value: "Seeded demo data - feel free to click around." }] }],
         categories: [{ name: "Studio", color: "#6d8bff", tasks: DEMO_TASKS }],
         theme: "dark"
       };

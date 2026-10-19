@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Veo">
+  <rect width="64" height="64" rx="14" fill="#081522"/>
+  <g fill="#4DD9CF">
+    <ellipse cx="35.2" cy="32" rx="17.3" ry="10.2"/>
+    <polygon points="21.8,32 9,21 9,43"/>
+  </g>
+  <circle cx="43.5" cy="29.5" r="2.3" fill="#081522"/>
+</svg>
