@@ -260,7 +260,13 @@ if (!webglOK()) {
   revealNav(); revealProjNav();   // both clusters shown; route class picks which is visible
   Promise.all([fontsReady(), preloadImages(2500)]).then(finishPreload);
 } else {
-  startExperience(initialRoute);
+  try { startExperience(initialRoute); }
+  catch (err) {                                  // never leave the visitor on the splash
+    console.error('[veo] startup failed', err);
+    document.body.classList.add('veo-no-webgl');
+    if (skipBtn) skipBtn.classList.add('is-hidden');
+    revealNav(); revealProjNav(); finishPreload();
+  }
 }
 
 window.addEventListener('hashchange', () => {
@@ -335,6 +341,7 @@ function createOrbit(scene, { keys = HOME_KEYS, startDeg = 0, scaleMul = 1 } = {
     firePulse() { pulse = 0.4; },
     nodeWorld(k) { return nodes[k].mesh.getWorldPosition(new THREE.Vector3()); },
     setViewport,
+    setScale(s) { group.scale.setScalar(s * scaleMul); },
     update(dt, now) {
       // node glow is drawn in the DOM (centered CSS halo); 3D nodes stay invisible
       // anchors used only for projection + driving segment brightness on hover.
@@ -355,8 +362,27 @@ function startExperience(initial) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
   const camBase = new THREE.Vector3(0, 0.25, 6);
-  camera.position.copy(camBase);
-  camera.lookAt(0, 0, 0);
+  // Responsive framing. On portrait phones the ring would spill off the sides
+  // and the side nodes would hide behind Veo, so we grow the ring relative to
+  // Veo and pull the camera back until the whole diamond of nodes fits.
+  function fitView() {
+    const aspect = window.innerWidth / window.innerHeight;
+    let ringScale, z;
+    if (aspect >= 1) {                         // landscape / desktop - unchanged
+      ringScale = THREE.MathUtils.clamp(window.innerWidth / 1150, 0.6, 1);
+      z = 6;
+    } else {                                   // portrait phones
+      ringScale = 0.9;                         // bigger ring so nodes clear Veo
+      z = THREE.MathUtils.clamp(2.05 * ringScale * 1.3 / (0.384 * aspect), 8, 14);
+    }
+    camera.aspect = aspect;
+    camBase.z = z;
+    camera.position.set(camBase.x, camBase.y, z);
+    camera.updateProjectionMatrix();
+    camera.lookAt(0, 0, 0);
+    if (orbit) orbit.setScale(ringScale);
+    if (projOrbit) projOrbit.setScale(ringScale);
+  }
 
   let renderer;
   try {
@@ -378,6 +404,7 @@ function startExperience(initial) {
   // projects ring is laid out exactly like the home ring (centred, same scale)
   const projOrbit = createOrbit(scene, { keys: ['glass', 'stickers', 'personal', 'fleet'], startDeg: 0 });
   projOrbit.group.visible = false;
+  fitView();                                   // frame the scene + size the rings for this viewport
 
   // ---- post-processing: a restrained UnrealBloom so turquoise highlights,
   //      the key accent and drifting particles glow (premium finish). Only on
@@ -518,14 +545,16 @@ function startExperience(initial) {
   }
 
   // ---------- boot warm-up (hidden behind the preloader) ----------
-  // Run the full pipeline now (showcase backdrop + bloom + Veo's physical
-  // material) so every expensive shader compiles here, not on the first
-  // visible frame. The splash only lifts once this is warm and assets are in.
-  let booting = true, warmFrames = 0;
+  // Compile the expensive shaders now (Veo's physical material + one
+  // post-processing pass) so they don't hitch on the first visible frame.
+  let booting = true;
   env.setShowcase(true); setComposer(true);
   veo.group.position.copy(REST_POS); veo.group.scale.setScalar(REST_SCALE); veo.setState(State.IDLE);
   if (skipBtn) skipBtn.classList.add('is-hidden');
-  try { renderer.compile(scene, camera); } catch { /* best-effort precompile */ }
+  try {
+    renderer.compile(scene, camera);
+    if (composer) composer.render(); else renderer.render(scene, camera); // warm the post pass too
+  } catch { /* best-effort precompile */ }
 
   function beginExperience() {
     if (!booting) return;
@@ -541,9 +570,11 @@ function startExperience(initial) {
     }
     finishPreload();
   }
-  const waitFrames = (n) => new Promise((res) => { const chk = () => (warmFrames >= n ? res() : requestAnimationFrame(chk)); chk(); });
-  Promise.all([fontsReady(), preloadImages(2800), waitFrames(3)])
-    .then(() => requestAnimationFrame(() => requestAnimationFrame(beginExperience)));
+  // Reveal once fonts + images are ready (both are time-bounded so this never
+  // waits forever), with a hard safety so the splash always lifts. Crucially it
+  // does NOT depend on the render loop ticking, so it can't hang per-browser.
+  Promise.all([fontsReady(), preloadImages(2800)]).then(() => requestAnimationFrame(beginExperience));
+  setTimeout(beginExperience, 4000);
 
   if (skipBtn) skipBtn.addEventListener('click', () => { if (introActive) finishIntro(); });
 
@@ -639,11 +670,11 @@ function startExperience(initial) {
 
   // ---------- resize ----------
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+    fitView();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     if (composer) { composer.setSize(window.innerWidth, window.innerHeight); composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); }
-    orbit.setViewport(); projOrbit.setViewport();
+    // ring scale is owned by fitView() (above); don't let setViewport override it
     if (docked && !tween) veo.group.position.copy(dockWorldPos());
   });
 
@@ -667,7 +698,6 @@ function startExperience(initial) {
   let last = performance.now(), ready = false;
   function frame(now) {
     const dt = (now - last) / 1000; last = now;
-    if (booting) warmFrames++;                 // count warm-up frames for the boot gate
     if (introStart === null) introStart = now;
     if (introActive) updateIntro((now - introStart) / 1000);
 

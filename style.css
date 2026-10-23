@@ -685,9 +685,11 @@ body.veo-no-webgl .veo-skip { display: none; }
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .veo-stage { transition: none; }
-  .veo-nav__item { transition: opacity 0.2s ease; transform: none !important; }
+  /* keep the centering translate (nodes are placed by their centre on the
+     projected point); only drop the scale/entrance animation */
+  .veo-nav__item,
   .veo-nav.is-revealed .veo-nav__item.is-in,
-  .veo-projnav.is-revealed .veo-nav__item.is-in { transform: none; }
+  .veo-projnav.is-revealed .veo-nav__item.is-in { transition: opacity 0.2s ease; transform: translate(-50%, -50%) !important; }
   .veo-nav__icon::after { animation: none; }
   .veo-skip { display: none; }
 }
