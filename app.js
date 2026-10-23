@@ -88,7 +88,7 @@ const VEO_DIALOGUE = {
 };
 // Per-project one-liners Veo says when you hover a project node (§15).
 const PROJ_DIALOGUE = {
-  stickers: 'Custom vinyl, plates and wall art - my design venture.',
+  stickers: 'Custom vinyl graphics and wall art - my design venture.',
   glass: 'Serial-numbered collectible glass coins.',
   fleet: 'Software for running delivery operations.',
   personal: "This very site - 3D, built from scratch.",

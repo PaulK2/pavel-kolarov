@@ -193,6 +193,7 @@ body.veo-route-content .veo-grade { display: none; }
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 .veo-detail__cta:hover { color: var(--aqua-soft); border-color: var(--aqua-soft); background: rgba(77, 217, 207, 0.12); transform: translateY(-2px); }
+.veo-detail__note { margin-top: 8px; font-size: 0.82rem; color: var(--text-muted); opacity: 0.72; }
 @media (max-width: 760px) { .veo-detail { grid-template-columns: 1fr; } }
 
 /* experience / contact / placeholder */
@@ -327,13 +328,11 @@ body.veo-route-hub .veo-projnav { display: block; }
 body.veo-route-hub .veo-dock { display: none; }
 body.veo-route-hub .veo-skip { display: none; }
 body.veo-route-hub .veo-status { opacity: 0; }
-/* the big 3D name steps down to a quiet wordmark on the hub (the "Projects" title leads) */
+/* the name steps down to a quiet wordmark on the hub (the "Projects" title leads) */
 body.veo-route-hub .veo-brand__name {
-  font-size: clamp(0.95rem, 2.2vw, 1.4rem);
-  font-weight: 600;
-  letter-spacing: 0.17em;
-  color: var(--text);
-  text-shadow: 0 2px 24px rgba(8, 21, 34, 0.8);
+  font-size: clamp(0.9rem, 2.1vw, 1.3rem);
+  letter-spacing: 0.18em;
+  filter: none;
 }
 body:not(.veo-route-hub) .veo-projnav { display: none; }
 
@@ -365,22 +364,15 @@ body:not(.veo-route-hub) .veo-projnav { display: none; }
 .veo-brand__name {
   margin: 0;
   font-family: "Deep Shadow", var(--font-display);
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  font-size: clamp(2.3rem, 7.5vw, 4.6rem);
-  color: #f2fdfb;
-  /* diagonal extruded 3D block in deepening turquoise + cast shadow + aqua glow */
-  text-shadow:
-    1px 1px 0 #a6ece4,
-    2px 2px 0 #6fd3ca,
-    3px 3px 0 #4bbab1,
-    4px 4px 0 #389a92,
-    5px 5px 0 #2a7c75,
-    6px 6px 0 #1f615c,
-    7px 7px 0 #164944,
-    9px 11px 14px rgba(2, 10, 16, 0.6),
-    0 0 40px rgba(77, 217, 207, 0.35);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.12;
+  font-size: clamp(1.45rem, 3.8vw, 2.6rem);
+  /* translucent, softly graded wordmark - airy rather than a solid slab */
+  background: linear-gradient(180deg, rgba(244, 252, 251, 0.88), rgba(197, 224, 222, 0.46));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  filter: drop-shadow(0 2px 20px rgba(6, 16, 26, 0.55));
 }
 
 /* ---------- radial navigation (home + projects hub share these styles) ---------- */
