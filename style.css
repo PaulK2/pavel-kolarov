@@ -176,6 +176,8 @@ body.veo-route-content .veo-grade { display: none; }
   box-shadow: 0 26px 64px -32px rgba(0, 0, 0, 0.85);
 }
 .veo-detail__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* a wide annotated dashboard shows in full (its own aspect, no side-crop) */
+.veo-detail__media--wide { aspect-ratio: 1800 / 822; }
 .veo-detail__body { display: flex; flex-direction: column; gap: 14px; }
 .veo-detail__tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .veo-detail__tags span {
