@@ -170,9 +170,11 @@ export class Veo {
 
     this.bodyMat = new THREE.MeshPhysicalMaterial({
       vertexColors: true, color: 0xffffff,
-      roughness: 0.42, metalness: 0.0,
-      clearcoat: 0.6, clearcoatRoughness: 0.45,
-      sheen: 0.7, sheenRoughness: 0.55, sheenColor: new THREE.Color(0xa6ece6),
+      roughness: 0.34, metalness: 0.0,
+      clearcoat: 1.0, clearcoatRoughness: 0.28,
+      sheen: 0.85, sheenRoughness: 0.5, sheenColor: new THREE.Color(0xbdf1ea),
+      iridescence: 0.5, iridescenceIOR: 1.3, iridescenceThicknessRange: [120, 440],
+      envMapIntensity: 0.9,
       emissive: new THREE.Color(0x0a3330), emissiveIntensity: 0.1,
     });
     this.bodyMesh = new THREE.Mesh(geo, this.bodyMat);
@@ -182,10 +184,12 @@ export class Veo {
 
   _finMaterial() {
     return new THREE.MeshPhysicalMaterial({
-      color: 0x9fe6df, roughness: 0.4, metalness: 0.0,
+      color: 0x9fe6df, roughness: 0.32, metalness: 0.0,
       transparent: true, opacity: 0.5, side: THREE.DoubleSide, depthWrite: false,
-      clearcoat: 0.3, clearcoatRoughness: 0.5,
-      sheen: 0.5, sheenColor: new THREE.Color(0xbff0eb),
+      clearcoat: 0.5, clearcoatRoughness: 0.4,
+      iridescence: 0.6, iridescenceIOR: 1.25,
+      envMapIntensity: 1.1,
+      sheen: 0.6, sheenColor: new THREE.Color(0xbff0eb),
       emissive: new THREE.Color(0x0f3f3b), emissiveIntensity: 0.14,
     });
   }

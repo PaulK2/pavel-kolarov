@@ -67,6 +67,28 @@ body::before {
 .veo-stage.is-ready { opacity: 1; }
 .veo-stage canvas { display: block; }
 
+/* ---------- cinematic grade (vignette + grain) ---------- */
+.veo-grade {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(135% 120% at 50% 44%, transparent 50%, rgba(2, 7, 13, 0.62) 100%),
+    linear-gradient(180deg, rgba(2, 7, 13, 0.45), transparent 22%),
+    radial-gradient(100% 90% at 50% 122%, rgba(2, 7, 13, 0.5), transparent 60%);
+  mix-blend-mode: multiply;
+}
+.veo-grade::after {
+  content: "";
+  position: absolute; inset: 0;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+/* on content routes the vignette would darken the reading panel - drop it */
+body.veo-route-content .veo-grade { display: none; }
+
 /* ---------- routed content ---------- */
 .veo-content {
   position: fixed;
@@ -130,6 +152,46 @@ body::before {
 }
 .veo-proj__link:hover { color: var(--aqua-soft); }
 .veo-proj__note { font-size: 0.8rem; color: var(--text-muted); opacity: 0.7; }
+
+/* ---------- project detail page (opens like portfolio/experience/contact) ---------- */
+.veo-detail__back {
+  display: inline-block; margin-bottom: 20px;
+  color: var(--text-muted); text-decoration: none;
+  font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.veo-detail__back:hover { color: var(--veo-turquoise); transform: translateX(-3px); }
+.veo-detail__logo {
+  width: 56px; height: 56px; object-fit: contain; display: block;
+  margin-bottom: 16px; border-radius: 14px;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.5));
+}
+.veo-detail {
+  display: grid; grid-template-columns: 1.08fr 0.92fr;
+  gap: clamp(22px, 4vw, 46px); align-items: start;
+}
+.veo-detail__media {
+  border-radius: 20px; overflow: hidden; aspect-ratio: 16 / 10; background: #0d2230;
+  border: 1px solid rgba(182, 233, 232, 0.14);
+  box-shadow: 0 26px 64px -32px rgba(0, 0, 0, 0.85);
+}
+.veo-detail__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.veo-detail__body { display: flex; flex-direction: column; gap: 14px; }
+.veo-detail__tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.veo-detail__tags span {
+  font-size: 0.68rem; letter-spacing: 0.06em; color: var(--text-muted);
+  padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(182, 233, 232, 0.18);
+}
+.veo-detail__body p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; max-width: 48ch; }
+.veo-detail__cta {
+  align-self: flex-start; margin-top: 8px;
+  padding: 11px 22px; border-radius: 999px;
+  color: var(--veo-turquoise); text-decoration: none; font-weight: 600; font-size: 0.92rem;
+  border: 1px solid rgba(77, 217, 207, 0.5);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.veo-detail__cta:hover { color: var(--aqua-soft); border-color: var(--aqua-soft); background: rgba(77, 217, 207, 0.12); transform: translateY(-2px); }
+@media (max-width: 760px) { .veo-detail { grid-template-columns: 1fr; } }
 
 /* experience / contact / placeholder */
 .veo-placeholder {
@@ -256,6 +318,23 @@ body.veo-route-content .veo-brand { opacity: 0; pointer-events: none; }
 body.veo-route-content .veo-skip { display: none; }
 body.veo-route-home .veo-dock { display: none; }
 
+/* projects hub: the home menu steps aside, the projects ring takes over,
+   Veo stays central and the ocean keeps living (like home). */
+body.veo-route-hub .veo-nav { display: none; }
+body.veo-route-hub .veo-projnav { display: block; }
+body.veo-route-hub .veo-dock { display: none; }
+body.veo-route-hub .veo-skip { display: none; }
+body.veo-route-hub .veo-status { opacity: 0; }
+/* the big 3D name steps down to a quiet wordmark on the hub (the "Projects" title leads) */
+body.veo-route-hub .veo-brand__name {
+  font-size: clamp(0.95rem, 2.2vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  color: var(--text);
+  text-shadow: 0 2px 24px rgba(8, 21, 34, 0.8);
+}
+body:not(.veo-route-hub) .veo-projnav { display: none; }
+
 /* ---------- branding ---------- */
 .veo-brand {
   position: fixed;
@@ -272,97 +351,147 @@ body.veo-route-home .veo-dock { display: none; }
   opacity: 0.9;
   transition: opacity 0.6s ease;
 }
-.veo-brand__name {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: 0.17em;
-  font-size: clamp(0.95rem, 2.2vw, 1.4rem);
-  color: var(--text);
-  text-shadow: 0 2px 24px rgba(8, 21, 34, 0.8);
+/* Premium 3D display face for the name. Drop the real font file at
+   assets/fonts/deep-shadow.{woff2,ttf} and it takes over automatically;
+   until then a bold fallback carries the extruded 3D treatment below. */
+@font-face {
+  font-family: "Deep Shadow";
+  src: url("assets/fonts/deep-shadow.woff2") format("woff2"),
+       url("assets/fonts/deep-shadow.ttf") format("truetype");
+  font-display: swap;
 }
-.veo-brand__tag {
-  font-size: clamp(0.56rem, 1.25vw, 0.66rem);
-  font-weight: 400;
-  letter-spacing: 0.13em;
-  text-transform: lowercase;
-  color: var(--text-muted);
-  opacity: 0.68;
+.veo-brand__name {
+  margin: 0;
+  font-family: "Deep Shadow", var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  font-size: clamp(2.3rem, 7.5vw, 4.6rem);
+  color: #f2fdfb;
+  /* diagonal extruded 3D block in deepening turquoise + cast shadow + aqua glow */
+  text-shadow:
+    1px 1px 0 #a6ece4,
+    2px 2px 0 #6fd3ca,
+    3px 3px 0 #4bbab1,
+    4px 4px 0 #389a92,
+    5px 5px 0 #2a7c75,
+    6px 6px 0 #1f615c,
+    7px 7px 0 #164944,
+    9px 11px 14px rgba(2, 10, 16, 0.6),
+    0 0 40px rgba(77, 217, 207, 0.35);
 }
 
-/* ---------- radial navigation ---------- */
-.veo-nav {
+/* ---------- radial navigation (home + projects hub share these styles) ---------- */
+.veo-nav, .veo-projnav {
   position: fixed;
   inset: 0;
   z-index: 4;
   pointer-events: none; /* items re-enable pointer events individually */
 }
+.veo-projnav { display: none; }
+
 /* Floating navigation anchors, positioned by JS so each icon centers exactly
-   on its projected orbit node - the halo is a radial glow centered on the icon
-   (so it never looks offset/detached), the label sits absolutely below. */
+   on its projected orbit node. The icon is a premium glass "coin" with a line
+   icon inside, a rotating conic rim and a centered ambient halo; the label
+   sits absolutely below. */
 .veo-nav__item {
   position: fixed;
   left: 0; top: 0;
   display: grid; place-items: center;
-  width: 62px; height: 62px;         /* invisible hit target; icon is centered within */
+  width: 84px; height: 84px;         /* invisible hit target; icon is centered within */
   color: var(--text);
   text-decoration: none;
   pointer-events: auto;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.86);
+  transform: translate(-50%, -50%) scale(0.84);
   transition: opacity 0.5s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s ease;
 }
-.veo-nav.is-revealed .veo-nav__item.is-in {
+.veo-nav.is-revealed .veo-nav__item.is-in,
+.veo-projnav.is-revealed .veo-nav__item.is-in {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
 .veo-nav__item:hover,
-.veo-nav__item:focus-visible { outline: none; transform: translate(-50%, -50%) scale(1.06); }
+.veo-nav__item:focus-visible { outline: none; transform: translate(-50%, -50%) scale(1.05); }
 
 .veo-nav__icon {
   position: relative;
-  width: 41px; height: 41px;      /* slightly more substantial (~12%), still light */
+  width: 62px; height: 62px;         /* substantial premium coin */
   display: grid; place-items: center;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 40%, rgba(90, 224, 214, 0.22), transparent 68%),
-    rgba(16, 36, 49, 0.34);
-  border: 1px solid rgba(182, 233, 232, 0.18);
+    radial-gradient(circle at 50% 32%, rgba(120, 236, 226, 0.32), transparent 62%),
+    linear-gradient(160deg, rgba(34, 72, 88, 0.88), rgba(12, 30, 42, 0.82));
+  border: 1px solid rgba(182, 233, 232, 0.3);
   color: var(--veo-turquoise);
-  font-size: 0.9rem;
-  box-shadow: inset 0 1px 1px rgba(182, 233, 232, 0.18), 0 4px 14px -9px rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  box-shadow:
+    inset 0 1px 1px rgba(197, 241, 236, 0.4),
+    inset 0 -8px 16px -10px rgba(0, 0, 0, 0.7),
+    0 10px 26px -14px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(9px) saturate(130%); -webkit-backdrop-filter: blur(9px) saturate(130%);
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
 }
+.veo-nav__icon svg {
+  width: 27px; height: 27px; display: block;
+  filter: drop-shadow(0 1px 6px rgba(77, 217, 207, 0.5));
+  transition: color 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* rotating conic rim - a slow premium light sweep around the coin edge */
+.veo-nav__icon::after {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: 50%;
+  padding: 1.5px;
+  background: conic-gradient(from 0deg,
+    rgba(77, 217, 207, 0) 0deg, rgba(77, 217, 207, 0.85) 60deg,
+    rgba(182, 233, 232, 0.2) 140deg, rgba(77, 217, 207, 0) 240deg, rgba(77, 217, 207, 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0.55;
+  animation: veoRimSpin 7s linear infinite;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+@keyframes veoRimSpin { to { transform: rotate(360deg); } }
 /* centered ambient halo behind the node (aligned, never offset) */
 .veo-nav__icon::before {
   content: "";
   position: absolute; left: 50%; top: 50%;
-  width: 60px; height: 60px;
+  width: 88px; height: 88px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(77, 217, 207, 0.28), rgba(77, 217, 207, 0) 68%);
+  background: radial-gradient(circle, rgba(77, 217, 207, 0.32), rgba(77, 217, 207, 0) 66%);
   opacity: 0.5; z-index: -1; pointer-events: none;
   transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 .veo-nav__item:hover .veo-nav__icon,
 .veo-nav__item:focus-visible .veo-nav__icon {
-  border-color: rgba(77, 217, 207, 0.65);
+  border-color: rgba(77, 217, 207, 0.85);
   background:
-    radial-gradient(circle at 50% 40%, rgba(90, 224, 214, 0.38), transparent 68%),
-    rgba(22, 48, 62, 0.42);
-  transform: translateY(-3px);
+    radial-gradient(circle at 50% 32%, rgba(140, 244, 234, 0.42), transparent 62%),
+    linear-gradient(160deg, rgba(40, 84, 100, 0.82), rgba(16, 38, 52, 0.72));
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 1px 1px rgba(197, 241, 236, 0.5),
+    0 16px 34px -16px rgba(0, 0, 0, 0.95),
+    0 0 30px -4px rgba(77, 217, 207, 0.55);
 }
+.veo-nav__item:hover .veo-nav__icon { color: var(--aqua-soft); }
+.veo-nav__item:hover .veo-nav__icon svg,
+.veo-nav__item:focus-visible .veo-nav__icon svg { transform: scale(1.08); }
+.veo-nav__item:hover .veo-nav__icon::after,
+.veo-nav__item:focus-visible .veo-nav__icon::after { opacity: 1; }
 .veo-nav__item:hover .veo-nav__icon::before,
-.veo-nav__item:focus-visible .veo-nav__icon::before { opacity: 0.85; width: 78px; height: 78px; }
+.veo-nav__item:focus-visible .veo-nav__icon::before { opacity: 0.95; width: 104px; height: 104px; }
 
 .veo-nav__label {
-  position: absolute; left: 50%; top: calc(50% + 30px);
+  position: absolute; left: 50%; top: calc(50% + 44px);
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: var(--font-body);
   font-weight: 600;
-  letter-spacing: 0.12em;
-  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-shadow: 0 2px 14px rgba(8, 21, 34, 0.95);
   transition: color 0.25s ease;
@@ -370,7 +499,8 @@ body.veo-route-home .veo-dock { display: none; }
 .veo-nav__item:hover .veo-nav__label,
 .veo-nav__item:focus-visible .veo-nav__label { color: var(--text); }
 /* selection: chosen item brightens, the others dim and retreat (§21) */
-.veo-nav.is-selecting .veo-nav__item:not(.is-selected) {
+.veo-nav.is-selecting .veo-nav__item:not(.is-selected),
+.veo-projnav.is-selecting .veo-nav__item:not(.is-selected) {
   opacity: 0.22;
   transform: translate(-50%, -50%) scale(0.9);
   filter: blur(1px);
@@ -379,15 +509,46 @@ body.veo-route-home .veo-dock { display: none; }
 .veo-nav__item.is-locked { opacity: 0.45; }
 .veo-nav__item.is-locked:hover, .veo-nav__item.is-locked:focus-visible { transform: translate(-50%, -50%) scale(1); }
 .veo-nav__item.is-locked .veo-nav__icon { border-style: dashed; }
-.veo-nav__item.is-locked:hover .veo-nav__icon { border-color: rgba(182, 233, 232, 0.3); background: rgba(16, 36, 49, 0.34); transform: none; }
+.veo-nav__item.is-locked .veo-nav__icon::after { display: none; }
+.veo-nav__item.is-locked:hover .veo-nav__icon { border-color: rgba(182, 233, 232, 0.3); transform: none; }
 .veo-nav__item.is-locked .veo-nav__icon::before { opacity: 0.15; }
-.veo-nav__item.is-locked:hover .veo-nav__icon::before { opacity: 0.2; width: 60px; height: 60px; }
+.veo-nav__item.is-locked:hover .veo-nav__icon::before { opacity: 0.2; width: 88px; height: 88px; }
 
 .veo-nav__item.is-selected .veo-nav__icon {
   border-color: var(--veo-turquoise);
-  background: rgba(40, 80, 95, 0.6);
-  box-shadow: 0 0 34px -2px rgba(77, 217, 207, 0.95);
+  background: rgba(40, 80, 95, 0.7);
+  box-shadow: 0 0 40px -2px rgba(77, 217, 207, 0.95);
 }
+.veo-nav__item.is-selected .veo-nav__icon { color: var(--aqua-soft); }
+
+/* project coins: real brand logos sit inside the glass coin */
+.veo-nav__icon--logo {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.10), transparent 60%),
+    linear-gradient(160deg, rgba(18, 40, 54, 0.92), rgba(7, 18, 28, 0.88));
+  overflow: hidden;
+}
+.veo-nav__logo {
+  width: 58%; height: 58%; object-fit: contain; display: block;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.veo-nav__item:hover .veo-nav__logo,
+.veo-nav__item:focus-visible .veo-nav__logo { transform: scale(1.09); }
+
+/* ---------- projects hub caption + return control ---------- */
+.veo-hub {
+  position: fixed;
+  top: clamp(68px, 12vh, 120px);
+  left: 0; right: 0;
+  z-index: 3;
+  text-align: center;
+  pointer-events: none;
+  animation: veoFadeUp 0.6s ease both;
+}
+.veo-hub[hidden] { display: none; }
+.veo-hub__eyebrow { font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--veo-turquoise); }
+.veo-hub__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 4.5vw, 2.6rem); color: var(--text); margin: 6px 0 0; text-shadow: 0 2px 24px rgba(8, 21, 34, 0.9); }
 
 /* system status detail (§19) */
 .veo-status {
@@ -457,18 +618,20 @@ body.veo-route-content .veo-status { opacity: 0; }
 
 /* ---------- no-WebGL fallback ---------- */
 body.veo-no-webgl .veo-stage { display: none; }
-body.veo-no-webgl .veo-nav { /* reveal nav immediately, laid out in a column */
+body.veo-no-webgl .veo-grade { display: none; }
+body.veo-no-webgl .veo-nav,
+body.veo-no-webgl .veo-projnav { /* reveal nav immediately, laid out in a row */
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 16px 28px;
   flex-wrap: wrap;
   padding: 0 16px;
 }
 body.veo-no-webgl .veo-nav__item {
   position: static;
   width: auto; height: auto;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   padding: 6px;
   opacity: 1;
   transform: none;
@@ -482,13 +645,19 @@ body.veo-no-webgl .veo-skip { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .veo-stage { transition: none; }
   .veo-nav__item { transition: opacity 0.2s ease; transform: none !important; }
-  .veo-nav.is-revealed .veo-nav__item.is-in { transform: none; }
+  .veo-nav.is-revealed .veo-nav__item.is-in,
+  .veo-projnav.is-revealed .veo-nav__item.is-in { transform: none; }
+  .veo-nav__icon::after { animation: none; }
   .veo-skip { display: none; }
 }
 
 /* small screens: compact controls; orbit positions come from JS projection */
 @media (max-width: 560px) {
-  .veo-nav__icon { width: 42px; height: 42px; font-size: 0.85rem; }
-  .veo-nav__label { font-size: 0.72rem; }
+  .veo-nav__item { width: 66px; height: 66px; }
+  .veo-nav__icon { width: 50px; height: 50px; }
+  .veo-nav__icon svg { width: 22px; height: 22px; }
+  .veo-nav__icon::before { width: 70px; height: 70px; }
+  .veo-nav__label { font-size: 0.72rem; top: calc(50% + 38px); }
   .veo-brand { top: 16px; }
+  .veo-hub { top: 70px; }
 }

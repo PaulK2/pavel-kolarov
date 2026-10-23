@@ -15,7 +15,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
 
   <!-- Three.js is loaded as an ES module from a pinned CDN build; no build step required. -->
@@ -35,55 +35,91 @@
        dock corner (content pages), carrying between routes without a reload. -->
   <div class="veo-stage" id="veo-stage" aria-hidden="true"></div>
 
-  <!-- Routed content (shown on content routes, scrollable, over the atrium). -->
+  <!-- Cinematic grade: a soft vignette + faint grain for a premium, filmic finish. -->
+  <div class="veo-grade" aria-hidden="true"></div>
+
+  <!-- Routed content (shown on content routes, scrollable, over the atrium).
+       Projects itself is a radial hub; each project opens an in-site detail
+       page here (same animated transition + static backdrop as the others). -->
   <main class="veo-content" id="veo-content" hidden>
 
-    <!-- PROJECTS -->
-    <section class="veo-page" data-route="projects" hidden aria-label="Projects">
+    <!-- PROJECT DETAIL - Stickers Studio -->
+    <section class="veo-page" data-route="proj-stickers" hidden aria-label="Stickers Studio">
+      <a class="veo-detail__back" href="#/projects">← All projects</a>
       <header class="veo-page__head">
-        <span class="veo-page__eyebrow">Selected work</span>
-        <h1 class="veo-page__title">Projects</h1>
-        <p class="veo-page__lead">A small, curated set of products - built, shipped and maintained.</p>
+        <img class="veo-detail__logo" src="assets/projects/logo-stickers.png" alt="Stickers Studio logo" />
+        <span class="veo-page__eyebrow">Project · Design venture</span>
+        <h1 class="veo-page__title">Stickers Studio</h1>
+        <p class="veo-page__lead">Custom vinyl graphics and large-format wall art — from artwork through to the cutter.</p>
       </header>
-      <div class="veo-showroom">
-        <article class="veo-proj">
-          <div class="veo-proj__media"><img src="assets/projects/stickers-studio.png" alt="Stickers Studio website" loading="lazy" /></div>
-          <div class="veo-proj__body">
-            <h2>Stickers Studio</h2>
-            <div class="veo-proj__tags"><span>Design venture</span><span>Vinyl · Plates · Wall art</span></div>
-            <p>An independent design and customization venture - custom vinyl graphics, registration plates and wall art, from artwork through to the cutter.</p>
-            <a class="veo-proj__link" href="https://stickers.studio" target="_blank" rel="noopener noreferrer">Visit stickers.studio ↗</a>
-          </div>
-        </article>
+      <div class="veo-detail">
+        <div class="veo-detail__media"><img src="assets/projects/stickers-studio.png" alt="Stickers Studio website" loading="lazy" /></div>
+        <div class="veo-detail__body">
+          <div class="veo-detail__tags"><span>Design venture</span><span>Vinyl</span><span>Wall art</span><span>Custom artwork</span></div>
+          <p>An independent design and customization venture. I take a job from the first idea all the way to the cutter — custom vinyl graphics and large-format wall art, designed and produced to order.</p>
+          <p>It covers the full pipeline: artwork preparation, material and colour choices, cutting and weeding, and finishing — so every piece comes out production-ready and consistent.</p>
+          <a class="veo-detail__cta" href="https://stickers.studio" target="_blank" rel="noopener noreferrer">Visit stickers.studio ↗</a>
+        </div>
+      </div>
+    </section>
 
-        <article class="veo-proj">
-          <div class="veo-proj__media veo-proj__media--fleet"><span>Delivery&nbsp;Fleet</span></div>
-          <div class="veo-proj__body">
-            <h2>Delivery Fleet Management</h2>
-            <div class="veo-proj__tags"><span>Operations software</span><span>Fleet · Routes · Payments</span></div>
-            <p>An application for running delivery operations: driver workflows, orders and routes, delivery status, customer details, cash and payment tracking, and operational reporting for fleet coordination.</p>
-          </div>
-        </article>
+    <!-- PROJECT DETAIL - Glass Trading -->
+    <section class="veo-page" data-route="proj-glass" hidden aria-label="Glass Trading">
+      <a class="veo-detail__back" href="#/projects">← All projects</a>
+      <header class="veo-page__head">
+        <img class="veo-detail__logo" src="assets/projects/logo-glass.svg" alt="Glass Trading logo" />
+        <span class="veo-page__eyebrow">Project · Collectible network</span>
+        <h1 class="veo-page__title">Glass Trading</h1>
+        <p class="veo-page__lead">A physical collectible network where every piece carries its own encrypted identity.</p>
+      </header>
+      <div class="veo-detail">
+        <div class="veo-detail__media"><img src="assets/projects/glass-preview.png" alt="Glass Trading — a physical collectible network" loading="lazy" /></div>
+        <div class="veo-detail__body">
+          <div class="veo-detail__tags"><span>Encrypted keys</span><span>Location-based</span><span>Collectible</span><span>Commerce</span></div>
+          <p>What makes Glass different is how each physical coin is tied to a verifiable digital identity. Every piece ships with its own <strong>individual encrypted registration key</strong>, so no two collectibles are interchangeable and ownership can be proven.</p>
+          <p>Activation is <strong>location-based</strong> — a coin is brought online where it's registered — and a public score / price interface lets any piece be looked up and tracked. The physical object and the network around it were designed as one system.</p>
+          <a class="veo-detail__cta" href="https://glass.trading" target="_blank" rel="noopener noreferrer">Visit glass.trading ↗</a>
+        </div>
+      </div>
+    </section>
 
-        <article class="veo-proj">
-          <div class="veo-proj__media"><img src="assets/projects/glass-trading.png" alt="Glass Trading website" loading="lazy" /></div>
-          <div class="veo-proj__body">
-            <h2>Glass Trading</h2>
-            <div class="veo-proj__tags"><span>Collectible</span><span>Serial-numbered · Commerce</span></div>
-            <p>A premium serial-numbered collectible network - limited-edition glass coins with their own product design and a public score/price interface.</p>
-            <a class="veo-proj__link" href="https://glass.trading" target="_blank" rel="noopener noreferrer">Visit glass.trading ↗</a>
-          </div>
-        </article>
+    <!-- PROJECT DETAIL - Delivery Fleet Management -->
+    <section class="veo-page" data-route="proj-fleet" hidden aria-label="Delivery Fleet Management">
+      <a class="veo-detail__back" href="#/projects">← All projects</a>
+      <header class="veo-page__head">
+        <img class="veo-detail__logo" src="assets/projects/logo-delivery.svg" alt="Delivery 2015 logo" />
+        <span class="veo-page__eyebrow">Project · Client work · In production</span>
+        <h1 class="veo-page__title">Delivery Fleet Management</h1>
+        <p class="veo-page__lead">Operations software I built for a client — in daily real-world use.</p>
+      </header>
+      <div class="veo-detail">
+        <div class="veo-detail__media"><img src="assets/projects/delivery-preview.png" alt="Delivery 2015 application" loading="lazy" /></div>
+        <div class="veo-detail__body">
+          <div class="veo-detail__tags"><span>Client project</span><span>Food delivery</span><span>Car park</span><span>In production</span></div>
+          <p>A project I built for a customer that is <strong>currently used in the real world</strong> to run their day-to-day operations — managing <strong>food deliveries</strong> and a <strong>car park</strong> from one system.</p>
+          <p>It covers driver workflows, orders and routes, live delivery status, customer details, cash and payment tracking, and operational reporting — the full picture of who is doing what and where every job stands.</p>
+          <a class="veo-detail__cta" href="https://2015.delivery" target="_blank" rel="noopener noreferrer">Visit 2015.delivery ↗</a>
+        </div>
+      </div>
+    </section>
 
-        <article class="veo-proj">
-          <div class="veo-proj__media"><img src="assets/projects/personal-website.png" alt="pavelkolarov.net 3D redesign preview" loading="lazy" /></div>
-          <div class="veo-proj__body">
-            <h2>Personal Website</h2>
-            <div class="veo-proj__tags"><span>3D · WebGL</span><span>Three.js · Interaction design</span></div>
-            <p>This site - an independently designed interactive experience with a custom 3D character, radial navigation and a persistent companion. You are looking at it.</p>
-            <a class="veo-proj__link" href="https://github.com/PaulK2" target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a>
-          </div>
-        </article>
+    <!-- PROJECT DETAIL - Personal Website -->
+    <section class="veo-page" data-route="proj-personal" hidden aria-label="Personal Website">
+      <a class="veo-detail__back" href="#/projects">← All projects</a>
+      <header class="veo-page__head">
+        <img class="veo-detail__logo" src="assets/projects/logo-personal.svg" alt="pavelkolarov.net logo" />
+        <span class="veo-page__eyebrow">Project · 3D · WebGL</span>
+        <h1 class="veo-page__title">Personal Website</h1>
+        <p class="veo-page__lead">This very site — an interactive 3D experience with a custom character and radial navigation.</p>
+      </header>
+      <div class="veo-detail">
+        <div class="veo-detail__media"><img src="assets/projects/personal-website.png" alt="pavelkolarov.net 3D experience" loading="lazy" /></div>
+        <div class="veo-detail__body">
+          <div class="veo-detail__tags"><span>Three.js</span><span>WebGL</span><span>Interaction design</span></div>
+          <p>An independently designed experience built from scratch: a procedural 3D character (Veo), a persistent companion that carries between pages, radial navigation and a hand-built underwater world.</p>
+          <p>You are looking at it right now — Veo swam you here. The whole thing is a no-build static site, so it stays fast and simple to host.</p>
+          <a class="veo-detail__cta" href="https://github.com/PaulK2/pavel-kolarov" target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a>
+        </div>
       </div>
     </section>
 
@@ -218,29 +254,80 @@
 
   <!-- Subtle branding only - no navigation lives in the header. -->
   <header class="veo-brand">
-    <span class="veo-brand__name">PAVEL&nbsp;KOLAROV</span>
-    <span class="veo-brand__tag">Engineering · Creativity · Independent Products</span>
+    <h1 class="veo-brand__name">PAVEL&nbsp;KOLAROV</h1>
   </header>
 
-  <!-- Radial navigation (home only). Real links so routing works without WebGL. -->
+  <!-- Radial navigation (home only). Real links so routing works without WebGL.
+       Each node is a premium glass "coin" with a line icon set inside it. -->
   <nav class="veo-nav" id="veo-nav" aria-label="Primary navigation">
-    <a class="veo-nav__item veo-nav__item--projects is-locked" href="#/projects" data-veo-dir="up-left" data-route="projects" aria-disabled="true">
-      <span class="veo-nav__icon" aria-hidden="true">◆</span>
+    <a class="veo-nav__item veo-nav__item--projects" href="#/projects" data-veo-dir="up-left" data-route="projects">
+      <span class="veo-nav__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3 21 8l-9 5-9-5 9-5Z"/><path d="M3 12l9 5 9-5"/><path d="M3 16l9 5 9-5"/>
+        </svg>
+      </span>
       <span class="veo-nav__label">Projects</span>
     </a>
     <a class="veo-nav__item veo-nav__item--portfolio" href="#/portfolio" data-veo-dir="up-right" data-route="portfolio">
-      <span class="veo-nav__icon" aria-hidden="true">❖</span>
+      <span class="veo-nav__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.7 3.1-6.2 7-6.2s7 2.5 7 6.2"/>
+        </svg>
+      </span>
       <span class="veo-nav__label">Portfolio</span>
     </a>
     <a class="veo-nav__item veo-nav__item--experience" href="#/experience" data-veo-dir="down-right" data-route="experience">
-      <span class="veo-nav__icon" aria-hidden="true">▲</span>
+      <span class="veo-nav__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="7.5" width="18" height="12" rx="2.3"/><path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5"/><path d="M3 12.6h18"/>
+        </svg>
+      </span>
       <span class="veo-nav__label">Experience</span>
     </a>
     <a class="veo-nav__item veo-nav__item--contact" href="#/contact" data-veo-dir="down-left" data-route="contact">
-      <span class="veo-nav__icon" aria-hidden="true">✉</span>
+      <span class="veo-nav__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5.5" width="18" height="13" rx="2.3"/><path d="m4 7.5 8 5.5 8-5.5"/>
+        </svg>
+      </span>
       <span class="veo-nav__label">Contact</span>
     </a>
   </nav>
+
+  <!-- Projects hub: a second radial navigation (home only in spirit) where every
+       node is one of Pavel's projects. Real links so it works without WebGL. -->
+  <nav class="veo-projnav" id="veo-projnav" aria-label="Projects">
+    <a class="veo-nav__item veo-projnav__item" href="#/projects/stickers" data-proj="stickers" data-route="proj-stickers">
+      <span class="veo-nav__icon veo-nav__icon--logo" aria-hidden="true">
+        <img class="veo-nav__logo" src="assets/projects/logo-stickers.png" alt="" loading="lazy" />
+      </span>
+      <span class="veo-nav__label">Stickers Studio</span>
+    </a>
+    <a class="veo-nav__item veo-projnav__item" href="#/projects/glass" data-proj="glass" data-route="proj-glass">
+      <span class="veo-nav__icon veo-nav__icon--logo" aria-hidden="true">
+        <img class="veo-nav__logo" src="assets/projects/logo-glass.svg" alt="" loading="lazy" />
+      </span>
+      <span class="veo-nav__label">Glass Trading</span>
+    </a>
+    <a class="veo-nav__item veo-projnav__item" href="#/projects/fleet" data-proj="fleet" data-route="proj-fleet">
+      <span class="veo-nav__icon veo-nav__icon--logo" aria-hidden="true">
+        <img class="veo-nav__logo" src="assets/projects/logo-delivery.svg" alt="" loading="lazy" />
+      </span>
+      <span class="veo-nav__label">Delivery Fleet</span>
+    </a>
+    <a class="veo-nav__item veo-projnav__item" href="#/projects/personal" data-proj="personal" data-route="proj-personal">
+      <span class="veo-nav__icon veo-nav__icon--logo" aria-hidden="true">
+        <img class="veo-nav__logo" src="assets/projects/logo-personal-mark.svg" alt="" loading="lazy" />
+      </span>
+      <span class="veo-nav__label">Personal Website</span>
+    </a>
+  </nav>
+
+  <!-- Hub caption (projects route only). Return control = clicking Veo himself. -->
+  <div class="veo-hub" id="veo-hub" aria-hidden="true" hidden>
+    <span class="veo-hub__eyebrow">Selected work</span>
+    <h2 class="veo-hub__title">Projects</h2>
+  </div>
 
   <!-- Veo's dock - persistent companion on content routes (spec §7).
        No "Return Home" button: docked Veo himself is the return control. -->

@@ -1,4 +1,8 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Veo, State } from './veo.js';
 import { createEnvironment } from './environment.js';
 
@@ -23,6 +27,10 @@ const REST_SCALE = 0.75;                 // reduced ~25% so the menu can breathe
 const START_POS = new THREE.Vector3(-2.7, -0.7, -7);
 const DOCK_SCALE = 0.32;
 const ROUTES = ['projects', 'portfolio', 'experience', 'contact'];
+const HOME_KEYS = ['experience', 'portfolio', 'projects', 'contact']; // ring order: right, top, left, bottom
+// Each project opens its own in-site detail page (like portfolio/experience/contact).
+const PROJ_SLUGS = { stickers: 'proj-stickers', glass: 'proj-glass', fleet: 'proj-fleet', personal: 'proj-personal' };
+const DETAIL_ROUTES = Object.values(PROJ_SLUGS);
 
 const damp = (cur, target, lambda, dt) => cur + (target - cur) * (1 - Math.exp(-lambda * dt));
 
@@ -52,7 +60,10 @@ function applyMoodCSS(m) {
 // ---------- DOM ----------
 const stage = document.getElementById('veo-stage');
 const navEl = document.getElementById('veo-nav');
-const navItems = Array.from(document.querySelectorAll('.veo-nav__item'));
+const navItems = Array.from(navEl.querySelectorAll('.veo-nav__item'));
+const projNavEl = document.getElementById('veo-projnav');
+const projItems = Array.from(projNavEl.querySelectorAll('.veo-nav__item'));
+const hubEl = document.getElementById('veo-hub');
 const skipBtn = document.getElementById('veo-skip');
 const contentEl = document.getElementById('veo-content');
 const pages = Array.from(document.querySelectorAll('.veo-page'));
@@ -73,9 +84,17 @@ const VEO_DIALOGUE = {
   contact: 'Reach out to my friend!',
   returnHome: 'Want to go back?',
   locked: 'Still working on those - check back soon!',
+  hub: 'Pick a project - or tap me to head back.',
+};
+// Per-project one-liners Veo says when you hover a project node (§15).
+const PROJ_DIALOGUE = {
+  stickers: 'Custom vinyl, plates and wall art - my design venture.',
+  glass: 'Serial-numbered collectible glass coins.',
+  fleet: 'Software for running delivery operations.',
+  personal: "This very site - 3D, built from scratch.",
 };
 // Routes temporarily locked (not yet ready to show). Easy to unlock later.
-const LOCKED_ROUTES = new Set(['projects']);
+const LOCKED_ROUTES = new Set();
 let veoScreen = { x: window.innerWidth / 2, y: window.innerHeight * 0.42 };
 let speechTimer = null, lastSpeech = { key: null, t: 0 };
 function positionSpeech() {
@@ -107,8 +126,11 @@ function speakFor(key, text) {
   lastSpeech = { key, t: now };
   showSpeech(text);
 }
-// Return home when Veo (the invisible accessible control) is activated (§12).
-if (homeHit) homeHit.addEventListener('click', () => { location.hash = '#/'; });
+// Veo (the invisible accessible control over docked Veo) is the return control:
+// from a project detail it returns to the projects hub, otherwise to home (§12).
+if (homeHit) homeHit.addEventListener('click', () => {
+  location.hash = isDetail(currentRoute) ? '#/projects' : '#/';
+});
 
 document.querySelectorAll('.veo-year').forEach((el) => { el.textContent = new Date().getFullYear(); });
 
@@ -116,47 +138,67 @@ const ROUTE_TITLE = {
   home: 'Pavel Kolarov | Home', projects: 'Pavel Kolarov | Projects',
   portfolio: 'Pavel Kolarov | Portfolio', experience: 'Pavel Kolarov | Experience',
   contact: 'Pavel Kolarov | Contact',
+  'proj-stickers': 'Pavel Kolarov | Stickers Studio',
+  'proj-glass': 'Pavel Kolarov | Glass Trading',
+  'proj-fleet': 'Pavel Kolarov | Delivery Fleet',
+  'proj-personal': 'Pavel Kolarov | Personal Website',
 };
 
 function routeFromHash() {
-  const h = location.hash.replace(/^#\/?/, '').trim();
+  const h = location.hash.replace(/^#\/?/, '').trim().replace(/\/+$/, '');
+  if (h === '') return 'home';
+  if (h === 'projects') return 'projects';
+  if (h.startsWith('projects/')) return PROJ_SLUGS[h.slice('projects/'.length)] || 'projects';
   return ROUTES.includes(h) ? h : 'home';
 }
+const isDetail = (r) => DETAIL_ROUTES.includes(r);
 
-function revealNav() {
-  navEl.classList.add('is-revealed');
-  navEl.classList.remove('is-selecting');
-  navItems.forEach((it, i) => {
+function revealCluster(el, items) {
+  el.classList.add('is-revealed');
+  el.classList.remove('is-selecting');
+  items.forEach((it, i) => {
     it.style.transitionDelay = reduceMotion ? '0ms' : `${i * 90}ms`;
     it.classList.add('is-in');
     it.classList.remove('is-selected');
   });
 }
-function hideNav() {
-  navEl.classList.remove('is-revealed', 'is-selecting');
-  navItems.forEach((it) => { it.classList.remove('is-in', 'is-selected'); it.style.transitionDelay = ''; });
+function hideCluster(el, items) {
+  el.classList.remove('is-revealed', 'is-selecting');
+  items.forEach((it) => { it.classList.remove('is-in', 'is-selected'); it.style.transitionDelay = ''; });
 }
+function revealNav() { revealCluster(navEl, navItems); }
+function hideNav() { hideCluster(navEl, navItems); }
+function revealProjNav() { revealCluster(projNavEl, projItems); }
+function hideProjNav() { hideCluster(projNavEl, projItems); }
 
 let contentHideTimer = null, dockHideTimer = null;
+let currentRoute = 'home';
 function applyRouteDOM(route) {
+  currentRoute = route;
   const isHome = route === 'home';
-  document.body.classList.toggle('veo-route-content', !isHome);
+  const isHub = route === 'projects';          // projects is its own radial hub, not a scroll page
+  const isContent = !isHome && !isHub;          // portfolio / experience / contact / project details
+  document.body.classList.toggle('veo-route-content', isContent);
+  document.body.classList.toggle('veo-route-hub', isHub);
   document.body.classList.toggle('veo-route-home', isHome);
   document.title = ROUTE_TITLE[route] || ROUTE_TITLE.home;
 
+  // hub caption (the return control on the hub is Veo himself - tap him)
+  if (hubEl) hubEl.hidden = !isHub;
+
   clearTimeout(contentHideTimer); clearTimeout(dockHideTimer);
-  if (isHome) {
-    contentEl.classList.remove('is-shown');               // crossfade out over the reviving ocean
-    contentHideTimer = setTimeout(() => { contentEl.hidden = true; pages.forEach((p) => { p.hidden = true; }); }, 820);
-    dockEl.classList.remove('is-shown');
-    dockHideTimer = setTimeout(() => { dockEl.hidden = true; }, 520);
-  } else {
+  if (isContent) {
     pages.forEach((p) => { p.hidden = p.dataset.route !== route; });
     contentEl.hidden = false; contentEl.scrollTop = 0;
     dockEl.hidden = false;
     requestAnimationFrame(() => { contentEl.classList.add('is-shown'); dockEl.classList.add('is-shown'); });
+  } else {
+    contentEl.classList.remove('is-shown');               // crossfade out over the reviving ocean
+    contentHideTimer = setTimeout(() => { contentEl.hidden = true; pages.forEach((p) => { p.hidden = true; }); }, 820);
+    dockEl.classList.remove('is-shown');
+    dockHideTimer = setTimeout(() => { dockEl.hidden = true; }, 520);
   }
-  if (homeHit) homeHit.hidden = isHome; // docked Veo is the return-home control
+  if (homeHit) homeHit.hidden = !isContent; // docked Veo is the return-home control (content only)
   hideSpeech(true);
 }
 
@@ -187,7 +229,7 @@ setInterval(() => applyMoodCSS(computeMood()), 60000);
 if (!webglOK()) {
   document.body.classList.add('veo-no-webgl');
   if (skipBtn) skipBtn.classList.add('is-hidden');
-  revealNav();
+  revealNav(); revealProjNav();   // both clusters shown; route class picks which is visible
 } else {
   startExperience(initialRoute);
 }
@@ -204,27 +246,30 @@ window.addEventListener('hashchange', () => {
 
 // ============================================================
 // A subtle, broken orbit (faint partial arc segments + a fainter secondary
-// ring) with small illuminated nodes at the menu positions. The nodes read
-// before the ring; hovering a node brightens its arc segment (§4, §5).
-function createOrbit(scene) {
+// ring) with small illuminated node anchors at the menu positions. The nodes
+// read before the ring; hovering a node brightens its arc segment (§4, §5).
+// Generalized: `keys` places evenly-spaced nodes around the diamond so the
+// same ring drives both the home menu and the projects hub.
+function createOrbit(scene, { keys = HOME_KEYS, startDeg = 0, scaleMul = 1 } = {}) {
   const D2R = Math.PI / 180;
   const group = new THREE.Group();
   group.rotation.x = -1.02;                 // tilt so the menu orbits Veo in depth
+  group.visible = true;
   scene.add(group);
   const R = 2.05;
-  const ANG = { experience: 0, portfolio: Math.PI / 2, projects: Math.PI, contact: -Math.PI / 2 };
+  const N = keys.length;
+  const step = 360 / N;
+  const ANG = {};                           // radians, per key
+  keys.forEach((k, i) => { ANG[k] = (startDeg + i * step) * D2R; });
 
-  // broken primary orbit - some segments are fully absent (gaps)
-  const segDefs = [
-    { c: 0, len: 36, base: 0.085, key: 'experience' },
-    { c: 45, len: 18, base: 0.0 },
-    { c: 90, len: 36, base: 0.085, key: 'portfolio' },
-    { c: 135, len: 24, base: 0.04 },
-    { c: 180, len: 36, base: 0.085, key: 'projects' },
-    { c: 225, len: 18, base: 0.0 },
-    { c: 270, len: 36, base: 0.085, key: 'contact' },
-    { c: 315, len: 26, base: 0.035 },
-  ];
+  // broken primary orbit: a bright arc centered on each node + a faint
+  // connector arc between neighbours (derived from the node layout).
+  const segDefs = [];
+  keys.forEach((k, i) => {
+    const c = startDeg + i * step;
+    segDefs.push({ c, len: Math.min(36, step * 0.52), base: 0.085, key: k });        // bright, at the node
+    segDefs.push({ c: c + step / 2, len: Math.max(14, step * 0.34), base: 0.04 });    // faint connector
+  });
   const segs = segDefs.map((d) => {
     const arc = d.len * D2R;
     const mat = new THREE.MeshBasicMaterial({ color: 0x4dd9cf, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, fog: false });
@@ -240,7 +285,7 @@ function createOrbit(scene) {
   group.add(sec);
 
   const nodes = {};
-  for (const k in ANG) {
+  for (const k of keys) {
     const mat = new THREE.MeshBasicMaterial({ color: 0x9ff0e8, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, fog: false });
     const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.042, 16, 12), mat);
     mesh.position.set(Math.cos(ANG[k]) * R, Math.sin(ANG[k]) * R, 0);
@@ -249,14 +294,13 @@ function createOrbit(scene) {
   }
 
   let revealed = false, revealT0 = 0, pulse = 0;
-  const order = ['portfolio', 'experience', 'contact', 'projects'];
 
-  function setViewport() { group.scale.setScalar(THREE.MathUtils.clamp(window.innerWidth / 1150, 0.6, 1)); }
+  function setViewport() { group.scale.setScalar(THREE.MathUtils.clamp(window.innerWidth / 1150, 0.6, 1) * scaleMul); }
   setViewport();
 
   return {
     group,
-    reveal() { revealed = true; revealT0 = performance.now(); order.forEach((k, i) => { nodes[k].delay = 120 + i * 150; }); },
+    reveal() { revealed = true; revealT0 = performance.now(); keys.forEach((k, i) => { nodes[k].delay = 120 + i * 150; }); },
     hide() { revealed = false; for (const k in nodes) nodes[k].hlTarget = 0; },
     highlight(k, on) { if (nodes[k]) nodes[k].hlTarget = on ? 1 : 0; },
     firePulse() { pulse = 0.4; },
@@ -295,13 +339,33 @@ function startExperience(initial) {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.0;
   stage.appendChild(renderer.domElement);
 
-  const env = createEnvironment(scene, { reducedMotion: reduceMotion });
+  const env = createEnvironment(scene, { reducedMotion: reduceMotion, renderer });
   const veo = new Veo({ reducedMotion: reduceMotion });
   scene.add(veo.group);
   const orbit = createOrbit(scene);
+  // projects ring is laid out exactly like the home ring (centred, same scale)
+  const projOrbit = createOrbit(scene, { keys: ['glass', 'stickers', 'personal', 'fleet'], startDeg: 0 });
+  projOrbit.group.visible = false;
+
+  // ---- post-processing: a restrained UnrealBloom so turquoise highlights,
+  //      the key accent and drifting particles glow (premium finish). Only on
+  //      showcase routes (home + hub), where the backdrop is opaque. ----
+  const lowPower = window.innerWidth < 760 || reduceMotion;
+  let composer = null, useComposer = false;
+  try {
+    if (!lowPower) {
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.6, 0.5, 0.72));
+      composer.addPass(new OutputPass());
+      composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      composer.setSize(window.innerWidth, window.innerHeight);
+    }
+  } catch { composer = null; }
+  const setComposer = (on) => { useComposer = !!(on && composer); };
 
   const applyMood = () => { const m = computeMood(); env.setMood(m); applyMoodCSS(m); };
   applyMood();
@@ -328,22 +392,63 @@ function startExperience(initial) {
     veo.setState(state);
   }
 
+  // Long "swim to another page" traversal: Veo swims off one side, the ring is
+  // swapped while he's off-screen, then he swims in from the far side to the
+  // centre - like paging to a new screen. `dir` = -1 swims left, +1 swims right.
+  function travelSwim(dir, toPos, toScale, onArrive, onDone) {
+    const off = 5.8;
+    const exitPos = new THREE.Vector3(dir * off, 0.18, 0.2);
+    const enterPos = new THREE.Vector3(-dir * off, 0.18, 0.2);
+    veo.setState(State.SWIMMING);
+    tween = {
+      fromPos: veo.group.position.clone(), fromScale: veo.group.scale.x,
+      toPos: exitPos, toScale, t0: performance.now(), dur: reduceMotion ? 180 : 640,
+      onDone: () => {
+        veo.group.position.copy(enterPos);     // reappear on the far side = the new page
+        veo.group.scale.setScalar(toScale);
+        if (onArrive) onArrive();               // the new ring blooms as he swims back in
+        veo.setState(State.SWIMMING);
+        tween = {
+          fromPos: enterPos.clone(), fromScale: toScale,
+          toPos: toPos.clone(), toScale, t0: performance.now(), dur: reduceMotion ? 200 : 900,
+          onDone,
+        };
+      },
+    };
+  }
+
   function goRoute(route, animate) {
     introActive = false;
     if (skipBtn) skipBtn.classList.add('is-hidden');
     const isHome = route === 'home';
-    if (isHome) {
-      hideNav(); orbit.hide(); env.setAmbient(1); orbit.group.visible = true; // ocean motion resumes (§12)
-      if (animate && docked) {
-        tweenTo(REST_POS, REST_SCALE, State.UNDOCKING, () => { veo.setState(State.IDLE); revealNav(); orbit.reveal(); });
-        if (introSeen) setTimeout(() => speakFor('back', VEO_DIALOGUE.back), reduceMotion ? 200 : 1100); // "Back already?" (§14)
-      } else {
+    const isHub = route === 'projects';          // projects is its own radial hub
+    const isAtrium = isHome || isHub;
+
+    // reset both clusters; the right one is revealed once Veo has settled
+    hideNav(); hideProjNav(); orbit.hide(); projOrbit.hide();
+
+    if (isAtrium) {
+      env.setAmbient(1); env.setShowcase(true); setComposer(true);   // living ocean + bloom
+      // the new ring blooms (centred, home-aligned) as Veo swims into the page
+      const showRing = () => {
+        orbit.group.visible = isHome;
+        projOrbit.group.visible = isHub;
+        if (isHome) { revealNav(); orbit.reveal(); }
+        else { revealProjNav(); projOrbit.reveal(); }
+      };
+      if (animate) {                              // Veo swims right across to the next page
+        const dir = isHub ? -1 : 1;               // to projects = swim left; back home = swim right
+        travelSwim(dir, REST_POS, REST_SCALE, showRing, () => veo.setState(State.IDLE));
+        if (isHome && docked && introSeen) setTimeout(() => speakFor('back', VEO_DIALOGUE.back), reduceMotion ? 300 : 1300);
+        if (isHub) setTimeout(() => speakFor('hub', VEO_DIALOGUE.hub), reduceMotion ? 300 : 1500);
+      } else {                                    // direct load / no animation
         veo.group.position.copy(REST_POS); veo.group.scale.setScalar(REST_SCALE);
-        veo.setState(State.IDLE); revealNav(); orbit.reveal();
+        veo.setState(State.IDLE); showRing();
       }
       docked = false;
     } else {
-      hideNav(); orbit.hide(); orbit.group.visible = false; env.setAmbient(0); // scene settles/crossfades out (§9,§11)
+      env.setAmbient(0); env.setShowcase(false); setComposer(false); // scene settles/crossfades out
+      orbit.group.visible = false; projOrbit.group.visible = false;
       const dp = dockWorldPos();
       if (animate && !docked) {
         tweenTo(dp, DOCK_SCALE, State.DOCKING, () => { veo.setState(State.IDLE); });
@@ -387,6 +492,7 @@ function startExperience(initial) {
     if (skipIntro) { goRoute('home', false); }
     else {
       introActive = true;
+      env.setShowcase(true); setComposer(true);   // bloom + backdrop during the cinematic
       veo.group.position.copy(START_POS); veo.group.scale.setScalar(0.3);
       veo.setState(State.SWIMMING);
     }
@@ -429,7 +535,10 @@ function startExperience(initial) {
     const dur = performance.now() - gesture.t0, norm = gesture.path / refLen();
     const smooth = THREE.MathUtils.clamp(1 - gesture.jerk * 0.18, 0.2, 1);
     if (dur >= 180 && norm >= 0.28) veo.pet(THREE.MathUtils.clamp(norm, 0.3, 1.2) * smooth);
-    else if (dur < 260 && norm < 0.2) veo.tap();
+    else if (dur < 260 && norm < 0.2) {
+      if (currentRoute === 'projects') location.hash = '#/';   // on the hub, a tap on Veo returns home
+      else veo.tap();
+    }
     else if (norm >= 0.12) veo.pet(0.4 * smooth);
     gesture = null;
   });
@@ -438,31 +547,44 @@ function startExperience(initial) {
   window.addEventListener('blur', () => veo.clearPointer());
 
   // ---------- nav: hover acknowledgement + selection choreography (§4) ----------
-  navItems.forEach((item) => {
-    const key = item.dataset.route;
-    let hoverTimer = null;
-    const locked = LOCKED_ROUTES.has(key);
-    const focusOn = () => {
-      if (!introActive && !docked) veo.setNav(orbit.nodeWorld(key)); // turn toward it now
-      orbit.highlight(key, true);
-      clearTimeout(hoverTimer);
-      const line = locked ? VEO_DIALOGUE.locked : VEO_DIALOGUE[key];
-      hoverTimer = setTimeout(() => { if (line) speakFor(locked ? 'locked' : key, line); }, 420); // comment after intent (§15)
-    };
-    const focusOff = () => { veo.clearNav(); orbit.highlight(key, false); clearTimeout(hoverTimer); };
-    item.addEventListener('mouseenter', focusOn);
-    item.addEventListener('mouseleave', focusOff);
-    item.addEventListener('focus', focusOn);
-    item.addEventListener('blur', focusOff);
-    item.addEventListener('click', (ev) => {
-      if (locked) { ev.preventDefault(); clearTimeout(hoverTimer); speakFor('locked', VEO_DIALOGUE.locked); return; }
-      clearTimeout(hoverTimer); hideSpeech();
-      navEl.classList.add('is-selecting');
-      navItems.forEach((o) => o.classList.toggle('is-selected', o === item));
-      orbit.highlight(key, true); orbit.firePulse();
-      veo.setNav(orbit.nodeWorld(key)); // orient toward the selection before docking
+  // Shared by the home menu (internal routes) and the projects hub (external
+  // project links). External items just open their link; internal items run the
+  // dim-the-others selection choreography before the route changes.
+  function wireNavCluster(el, items, orbitRef, { keyAttr, dialogue, external }) {
+    items.forEach((item) => {
+      const key = item.dataset[keyAttr];
+      let hoverTimer = null;
+      const locked = !external && LOCKED_ROUTES.has(key);
+      const speechKey = external ? `proj-${key}` : (locked ? 'locked' : key);
+      const focusOn = () => {
+        if (!introActive && !docked) veo.setNav(orbitRef.nodeWorld(key)); // turn toward it now
+        orbitRef.highlight(key, true);
+        clearTimeout(hoverTimer);
+        const line = locked ? VEO_DIALOGUE.locked : dialogue[key];
+        hoverTimer = setTimeout(() => { if (line) speakFor(speechKey, line); }, 420); // comment after intent (§15)
+      };
+      const focusOff = () => { veo.clearNav(); orbitRef.highlight(key, false); clearTimeout(hoverTimer); };
+      item.addEventListener('mouseenter', focusOn);
+      item.addEventListener('mouseleave', focusOff);
+      item.addEventListener('focus', focusOn);
+      item.addEventListener('blur', focusOff);
+      item.addEventListener('click', (ev) => {
+        if (locked) { ev.preventDefault(); clearTimeout(hoverTimer); speakFor('locked', VEO_DIALOGUE.locked); return; }
+        clearTimeout(hoverTimer);
+        if (external) {                      // let the link open (new tab); just acknowledge
+          orbitRef.highlight(key, true); orbitRef.firePulse(); veo.pet(0.12);
+          return;
+        }
+        hideSpeech();
+        el.classList.add('is-selecting');
+        items.forEach((o) => o.classList.toggle('is-selected', o === item));
+        orbitRef.highlight(key, true); orbitRef.firePulse();
+        veo.setNav(orbitRef.nodeWorld(key)); // orient toward the selection before docking
+      });
     });
-  });
+  }
+  wireNavCluster(navEl, navItems, orbit, { keyAttr: 'route', dialogue: VEO_DIALOGUE, external: false });
+  wireNavCluster(projNavEl, projItems, projOrbit, { keyAttr: 'proj', dialogue: PROJ_DIALOGUE, external: false });
 
   // docked Veo notices the cursor over his hit area and offers to go back (§29)
   if (homeHit) homeHit.addEventListener('mouseenter', () => { veo.pet(0.15); speakFor('returnHome', VEO_DIALOGUE.returnHome); });
@@ -472,20 +594,24 @@ function startExperience(initial) {
     camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    orbit.setViewport();
+    if (composer) { composer.setSize(window.innerWidth, window.innerHeight); composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); }
+    orbit.setViewport(); projOrbit.setViewport();
     if (docked && !tween) veo.group.position.copy(dockWorldPos());
   });
 
   // ---------- projected nav positions ----------
   const _p = new THREE.Vector3();
   const _wp = new THREE.Vector3();
-  function updateNavPositions() {
-    if (!navEl.classList.contains('is-revealed')) return;
-    for (const item of navItems) {
-      _p.copy(orbit.nodeWorld(item.dataset.route)).project(camera);
+  function projectCluster(items, orbitRef, keyAttr) {
+    for (const item of items) {
+      _p.copy(orbitRef.nodeWorld(item.dataset[keyAttr])).project(camera);
       item.style.left = `${(_p.x * 0.5 + 0.5) * window.innerWidth}px`;
       item.style.top = `${(-_p.y * 0.5 + 0.5) * window.innerHeight}px`;
     }
+  }
+  function updateNavPositions() {
+    if (navEl.classList.contains('is-revealed')) projectCluster(navItems, orbit, 'route');
+    if (projNavEl.classList.contains('is-revealed')) projectCluster(projItems, projOrbit, 'proj');
   }
 
   // ---------- render loop ----------
@@ -518,13 +644,14 @@ function startExperience(initial) {
     veo.update(dt, now);
     env.update(dt, now);
     orbit.update(dt, now);
+    projOrbit.update(dt, now);
     updateNavPositions();
     // track Veo on screen for the speech bubble
     veo.group.getWorldPosition(_wp).project(camera);
     veoScreen.x = (_wp.x * 0.5 + 0.5) * window.innerWidth;
     veoScreen.y = (-_wp.y * 0.5 + 0.5) * window.innerHeight;
     positionSpeech();
-    renderer.render(scene, camera);
+    if (useComposer && composer) composer.render(); else renderer.render(scene, camera);
     if (!ready) { ready = true; stage.classList.add('is-ready'); }
     requestAnimationFrame(frame);
   }

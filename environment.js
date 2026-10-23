@@ -31,9 +31,58 @@ function softDot() {
   return tex;
 }
 
-export function createEnvironment(scene, { reducedMotion = false } = {}) {
+// vertical gradient canvas -> texture (used for the backdrop + IBL environment)
+function gradientTexture(stops, w = 16, h = 512) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0, 0, 0, h);
+  for (const [o, col] of stops) grad.addColorStop(o, col);
+  g.fillStyle = grad; g.fillRect(0, 0, w, h);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// cinematic screen-space backdrop: deep ocean with a soft central light bloom
+function backdropTexture() {
+  const s = 1024, c = document.createElement('canvas'); c.width = c.height = s;
+  const g = c.getContext('2d');
+  const lin = g.createLinearGradient(0, 0, 0, s);
+  lin.addColorStop(0, '#0a1d2b');
+  lin.addColorStop(0.5, '#071521');
+  lin.addColorStop(1, '#03080f');
+  g.fillStyle = lin; g.fillRect(0, 0, s, s);
+  const rad = g.createRadialGradient(s * 0.5, s * 0.4, 0, s * 0.5, s * 0.4, s * 0.6);
+  rad.addColorStop(0, 'rgba(77,217,207,0.13)');
+  rad.addColorStop(0.5, 'rgba(60,170,180,0.04)');
+  rad.addColorStop(1, 'rgba(77,217,207,0)');
+  g.fillStyle = rad; g.fillRect(0, 0, s, s);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+export function createEnvironment(scene, { reducedMotion = false, renderer = null } = {}) {
   const lowPower = window.innerWidth < 760 || reducedMotion;
   scene.fog = new THREE.FogExp2(OCEAN_DEEP, 0.052);
+
+  // ---- image-based lighting: subtle teal IBL so Veo's PBR material gets
+  //      believable, directional reflections (premium sheen) ----
+  const backdrop = backdropTexture();
+  if (renderer) {
+    try {
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      const envSrc = gradientTexture([
+        [0.0, '#dff6f1'], [0.28, '#8fd8d2'], [0.55, '#2f6f74'], [1.0, '#071722'],
+      ]);
+      envSrc.mapping = THREE.EquirectangularReflectionMapping;
+      scene.environment = pmrem.fromEquirectangular(envSrc).texture;
+      envSrc.dispose(); pmrem.dispose();
+    } catch { /* IBL is a nicety; ignore if unsupported */ }
+  }
+  // Showcase routes (home + projects hub) use an opaque cinematic backdrop so
+  // bloom reads richly; content routes clear it for the transparent floating Veo.
+  function setShowcase(on) { scene.background = on ? backdrop : null; }
 
   // ---- cinematic 3-point lighting (§6) ----
   const hemi = new THREE.HemisphereLight(0x2c5a6b, 0x04101a, 0.45); // weak fill -> darker underside
@@ -63,14 +112,14 @@ export function createEnvironment(scene, { reducedMotion = false } = {}) {
   }
   seabedGeo.computeVertexNormals();
   const seabed = new THREE.Mesh(seabedGeo, new THREE.MeshStandardMaterial({
-    color: 0x071a27, emissive: 0x06161f, emissiveIntensity: 0.3, roughness: 1, metalness: 0,
+    color: 0x071a27, emissive: 0x06161f, emissiveIntensity: 0.3, roughness: 1, metalness: 0, envMapIntensity: 0.15,
   }));
   seabed.rotation.x = -Math.PI / 2 + 0.12;
   seabed.position.set(0, -3.6, -6);
   group.add(seabed);
 
   // ---- desaturated coral silhouettes + rocks (§2, §3) ----
-  const coralMat = new THREE.MeshStandardMaterial({ color: 0x123a3d, emissive: 0x0c2a2e, emissiveIntensity: 0.35, roughness: 0.95, metalness: 0.1 });
+  const coralMat = new THREE.MeshStandardMaterial({ color: 0x123a3d, emissive: 0x0c2a2e, emissiveIntensity: 0.35, roughness: 0.95, metalness: 0.1, envMapIntensity: 0.15 });
   const branchGeo = new THREE.CapsuleGeometry(0.06, 1, 4, 8);
   function makeCoral() {
     const g = new THREE.Group();
@@ -95,7 +144,7 @@ export function createEnvironment(scene, { reducedMotion = false } = {}) {
     c.scale.setScalar(s);
     group.add(c);
   }
-  const rockMat = new THREE.MeshStandardMaterial({ color: 0x0a2230, emissive: 0x081a24, emissiveIntensity: 0.3, roughness: 1, metalness: 0.05, flatShading: true });
+  const rockMat = new THREE.MeshStandardMaterial({ color: 0x0a2230, emissive: 0x081a24, emissiveIntensity: 0.3, roughness: 1, metalness: 0.05, flatShading: true, envMapIntensity: 0.15 });
   for (const [x, z, s] of [[-5, -8, 1.1], [6, -9, 1.3], [-9, -12, 1.8], [2, -14, 1.6]]) {
     const rock = new THREE.Mesh(new THREE.IcosahedronGeometry(s, 0), rockMat);
     rock.position.set(x, -3.8, z);
@@ -209,5 +258,5 @@ export function createEnvironment(scene, { reducedMotion = false } = {}) {
     // particle opacity is driven by the ambient crossfade, not mood, to avoid conflicts
   }
 
-  return { update, accent, group, setMood, setAmbient };
+  return { update, accent, group, setMood, setAmbient, setShowcase };
 }

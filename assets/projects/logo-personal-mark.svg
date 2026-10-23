@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 100 400 320" width="400" height="320">
+  <defs>
+    <linearGradient id="pfish" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
+      <stop offset="0%" stop-color="#d6f6f1"/>
+      <stop offset="42%" stop-color="#4dd9cf"/>
+      <stop offset="100%" stop-color="#2b8f88"/>
+    </linearGradient>
+    <linearGradient id="pfin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8fe6de"/>
+      <stop offset="100%" stop-color="#2f9f98"/>
+    </linearGradient>
+    <linearGradient id="psheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M150 256 C110 212 96 190 92 150 C150 186 176 214 192 256 C176 298 150 326 92 362 C96 322 110 300 150 256 Z" fill="url(#pfin)"/>
+  <path d="M250 150 C236 110 250 92 300 92 C292 128 282 150 268 168 Z" fill="url(#pfin)" opacity="0.92"/>
+  <path d="M176 256 C176 180 240 136 316 136 C372 136 416 178 420 236 C421 244 421 268 420 276 C416 334 372 376 316 376 C240 376 176 332 176 256 Z" fill="url(#pfish)"/>
+  <path d="M214 300 C232 338 288 356 336 352 C300 372 236 368 206 330 Z" fill="#083a37" opacity="0.28"/>
+  <ellipse cx="300" cy="190" rx="86" ry="30" fill="url(#psheen)" opacity="0.5" transform="rotate(-18 300 190)"/>
+  <circle cx="356" cy="224" r="26" fill="#071a20"/>
+  <circle cx="364" cy="216" r="8" fill="#eafcfa"/>
+</svg>
