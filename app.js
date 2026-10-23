@@ -218,6 +218,34 @@ function webglOK() {
   } catch { return false; }
 }
 
+// ---------- preloader: keep the branded splash up until everything the first
+// impression needs is in place (modules, fonts, images, compiled shaders). ----
+const preloadEl = document.getElementById('veo-preload');
+let preloadDone = false;
+function finishPreload() {
+  if (preloadDone) return; preloadDone = true;
+  if (preloadEl) { preloadEl.classList.add('is-done'); setTimeout(() => { preloadEl.hidden = true; }, 760); }
+}
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+function fontsReady() {
+  try { return Promise.race([document.fonts.ready, delay(1600)]); } catch { return Promise.resolve(); }
+}
+// warm the browser cache for every page/detail/experience image so navigation
+// transitions never pop while an image streams in on first use.
+function preloadImages(timeout = 3000) {
+  const urls = [
+    'assets/projects/logo-stickers.png', 'assets/projects/logo-glass.svg', 'assets/projects/logo-delivery.svg',
+    'assets/projects/logo-personal.svg', 'assets/projects/logo-personal-mark.svg',
+    'assets/projects/stickers-studio.png', 'assets/projects/glass-preview.png',
+    'assets/projects/delivery-preview.png', 'assets/projects/personal-website.png',
+    'assets/logos/a1.png', 'assets/logos/hpe.png', 'assets/logos/bosch.png', 'assets/logos/hcl.png', 'assets/logos/amazon-blink.png',
+  ];
+  const load = Promise.all(urls.map((u) => new Promise((res) => { const im = new Image(); im.onload = im.onerror = res; im.src = u; })));
+  return Promise.race([load, delay(timeout)]);
+}
+// never trap the visitor behind the splash, whatever happens downstream
+setTimeout(finishPreload, 9000);
+
 let scene3d = null;
 let initialRoute = routeFromHash();
 if (LOCKED_ROUTES.has(initialRoute)) initialRoute = 'home'; // don't open a locked route directly
@@ -230,6 +258,7 @@ if (!webglOK()) {
   document.body.classList.add('veo-no-webgl');
   if (skipBtn) skipBtn.classList.add('is-hidden');
   revealNav(); revealProjNav();   // both clusters shown; route class picks which is visible
+  Promise.all([fontsReady(), preloadImages(2500)]).then(finishPreload);
 } else {
   startExperience(initialRoute);
 }
@@ -488,15 +517,34 @@ function startExperience(initial) {
     if (elapsed >= 3.9) finishIntro();
   }
 
-  if (initial === 'home') {
-    if (skipIntro) { goRoute('home', false); }
-    else {
-      introActive = true;
-      env.setShowcase(true); setComposer(true);   // bloom + backdrop during the cinematic
+  // ---------- boot warm-up (hidden behind the preloader) ----------
+  // Run the full pipeline now (showcase backdrop + bloom + Veo's physical
+  // material) so every expensive shader compiles here, not on the first
+  // visible frame. The splash only lifts once this is warm and assets are in.
+  let booting = true, warmFrames = 0;
+  env.setShowcase(true); setComposer(true);
+  veo.group.position.copy(REST_POS); veo.group.scale.setScalar(REST_SCALE); veo.setState(State.IDLE);
+  if (skipBtn) skipBtn.classList.add('is-hidden');
+  try { renderer.compile(scene, camera); } catch { /* best-effort precompile */ }
+
+  function beginExperience() {
+    if (!booting) return;
+    booting = false;
+    if (initial === 'home' && !skipIntro) {        // play the cinematic - now smooth
+      introActive = true; introStart = null;
+      env.setShowcase(true); setComposer(true);
       veo.group.position.copy(START_POS); veo.group.scale.setScalar(0.3);
       veo.setState(State.SWIMMING);
+      if (skipBtn) skipBtn.classList.remove('is-hidden');
+    } else {                                        // reveal the rested / hub / content state
+      goRoute(initial, false);
     }
-  } else { goRoute(initial, false); }
+    finishPreload();
+  }
+  const waitFrames = (n) => new Promise((res) => { const chk = () => (warmFrames >= n ? res() : requestAnimationFrame(chk)); chk(); });
+  Promise.all([fontsReady(), preloadImages(2800), waitFrames(3)])
+    .then(() => requestAnimationFrame(() => requestAnimationFrame(beginExperience)));
+
   if (skipBtn) skipBtn.addEventListener('click', () => { if (introActive) finishIntro(); });
 
   // ---------- pointer interaction (§6) + camera parallax target ----------
@@ -619,6 +667,7 @@ function startExperience(initial) {
   let last = performance.now(), ready = false;
   function frame(now) {
     const dt = (now - last) / 1000; last = now;
+    if (booting) warmFrames++;                 // count warm-up frames for the boot gate
     if (introStart === null) introStart = now;
     if (introActive) updateIntro((now - introStart) / 1000);
 

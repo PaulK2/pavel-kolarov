@@ -52,6 +52,49 @@ body::before {
   transition: background 1.2s linear;
 }
 
+/* ---------- preloader / splash ---------- */
+.veo-preload {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60% 55% at 50% 42%, rgba(77, 217, 207, 0.08), transparent 70%),
+    radial-gradient(90% 90% at 50% 120%, rgba(20, 44, 59, 0.9), transparent 70%),
+    var(--ocean-deep);
+  opacity: 1;
+  transition: opacity 0.7s ease;
+}
+.veo-preload.is-done { opacity: 0; pointer-events: none; }
+.veo-preload[hidden] { display: none; }
+.veo-preload__inner { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.veo-preload__fish {
+  width: 88px; height: 88px; border-radius: 22px;
+  filter: drop-shadow(0 12px 34px rgba(0, 0, 0, 0.55));
+  animation: veoBreath 2.4s ease-in-out infinite;
+}
+@keyframes veoBreath { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.035); } }
+.veo-preload__name {
+  font-family: var(--font-display); font-weight: 600;
+  letter-spacing: 0.24em; font-size: 0.82rem;
+  color: rgba(238, 248, 247, 0.58);
+}
+.veo-preload__bar {
+  width: 140px; height: 2px; border-radius: 2px;
+  background: rgba(182, 233, 232, 0.14); overflow: hidden; position: relative;
+}
+.veo-preload__bar i {
+  position: absolute; top: 0; left: -40%; height: 100%; width: 40%; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--veo-turquoise), transparent);
+  animation: veoLoad 1.15s ease-in-out infinite;
+}
+@keyframes veoLoad { 0% { left: -40%; } 100% { left: 100%; } }
+@media (prefers-reduced-motion: reduce) {
+  .veo-preload__fish, .veo-preload__bar i { animation: none; }
+  .veo-preload { transition: opacity 0.3s ease; }
+}
+
 /* ---------- 3D stage ----------
    Transparent canvas layered ABOVE the content so the docked Veo floats over
    content pages. pointer-events:none lets clicks reach content; Veo's own

@@ -18,6 +18,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
 
+  <!-- Preload the heavy module graph up front so first load is fast and the
+       intro plays smoothly (the CDN Three build is the big one). -->
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" crossorigin />
+  <link rel="modulepreload" href="./veo.js" />
+  <link rel="modulepreload" href="./environment.js" />
+  <link rel="modulepreload" href="./app.js" />
+  <noscript><style>.veo-preload{display:none !important}</style></noscript>
+
   <!-- Three.js is loaded as an ES module from a pinned CDN build; no build step required. -->
   <script type="importmap">
   {
@@ -30,6 +38,16 @@
 </head>
 
 <body class="veo-route-home">
+  <!-- Branded splash: held up until modules, fonts, images and shaders are
+       ready, so the first impression (and the intro) is smooth. -->
+  <div class="veo-preload" id="veo-preload" aria-hidden="true">
+    <div class="veo-preload__inner">
+      <img class="veo-preload__fish" src="assets/favicon.svg" alt="" width="88" height="88" />
+      <span class="veo-preload__name">PAVEL&nbsp;KOLAROV</span>
+      <span class="veo-preload__bar"><i></i></span>
+    </div>
+  </div>
+
   <!-- Single persistent 3D canvas. It is transparent and sits above the
        content layer; Veo is drawn on it in the hero position (home) or the
        dock corner (content pages), carrying between routes without a reload. -->
